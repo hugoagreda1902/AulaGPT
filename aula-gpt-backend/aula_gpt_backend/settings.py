@@ -1,4 +1,7 @@
 from pathlib import Path
+import pymysql 
+pymysql.install_as_MySQLdb()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -68,13 +71,14 @@ WSGI_APPLICATION = 'aula_gpt_backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'aulagpt_db',
-        'USER': 'root',
-        'PASSWORD': '1234',
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'NAME': 'aula_gpt_db',  # El nombre de tu base de datos
+        'USER': 'root',  # Usuario de MySQL
+        'PASSWORD': '1234',  # Contraseña del contenedor de MySQL
+        'HOST': '127.0.0.1',  # Dirección IP del contenedor
+        'PORT': '3307',  # Puerto expuesto por el contenedor
     }
 }
+
 
 
 
