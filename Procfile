@@ -1,1 +1,1 @@
-web: cd aula-gpt-frontend && npm run start
+web: cd aula-gpt-frontend && npm start
