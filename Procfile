@@ -1,1 +1,1 @@
-web: cd Aula-GPT-Frontend && npm install && npm run build && serve -s build
+web: cd Aula-GPT-Frontend && npm install && npm run build && npx serve -s build
