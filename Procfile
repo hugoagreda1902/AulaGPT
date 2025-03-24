@@ -1,1 +1,1 @@
-web: cd aula-gpt-backend && gunicorn aula_gpt_backend.wsgi --log-file -
+web: gunicorn aula_gpt_backend.wsgi --chdir aula-gpt-backend --log-file -
