@@ -1,15 +1,12 @@
 {
   "name": "aula-gpt",
   "version": "1.0.0",
-  "description": "Backend for AulaGPT project",
-  "main": "index.js",
-  "scripts": {
-    "start": "python manage.py runserver",  
-    "heroku-postbuild": "npm install --prefix Aula-GPT-Frontend && npm run build --prefix Aula-GPT-Frontend" 
-  },
-  "author": "Hugo",
-  "license": "ISC",
   "dependencies": {
-
+  },
+  "scripts": {
+    "start": "python manage.py runserver"
+  },
+  "engines": {
+    "node": "14.x"
   }
 }
