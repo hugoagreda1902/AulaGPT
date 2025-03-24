@@ -1,25 +1,29 @@
+import os
 from pathlib import Path
-import pymysql 
-pymysql.install_as_MySQLdb()
+import dj_database_url
+
+# Configuración de la clave secreta
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-default_secret_key')
+
+# Configuración de modo de depuración
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
+
+# Hosts permitidos (separados por comas)
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+# Configuración de la base de datos para Heroku con MySQL
+DATABASES = {
+    'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL'),
+        conn_max_age=600,
+        ssl_require=True
+    )
+}
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-@ffy835x_n#hkz=^4e*z7oq_*%p*lj+9gg3=li^%#tm)heiw(+'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = ['aulagpt-7eea247d3feb.herokuapp.com', 'localhost', '127.0.0.1', '*']
-
-
-# Application definition
+# Root URL configuration
+ROOT_URLCONF = 'aula_gpt_backend.urls'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -28,9 +32,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
-    'rest_framework',
-    'whitenoise.runserver_nostatic',
 ]
 
 MIDDLEWARE = [
@@ -41,10 +42,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
-
-ROOT_URLCONF = 'aula_gpt_backend.urls'
 
 TEMPLATES = [
     {
@@ -62,63 +60,3 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'aula_gpt_backend.wsgi.application'
-
-
-# Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'aula_gpt_db',  # El nombre de tu base de datos
-        'USER': 'root',  # Usuario de MySQL
-        'PASSWORD': '1234',  # Contraseña del contenedor de MySQL
-        'HOST': '127.0.0.1',  # Dirección IP del contenedor
-        'PORT': '3307',  # Puerto expuesto por el contenedor
-    }
-}
-
-
-
-
-# Password validation
-# https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
-
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
-
-
-# Internationalization
-# https://docs.djangoproject.com/en/5.1/topics/i18n/
-
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
-USE_I18N = True
-
-USE_TZ = True
-
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.1/howto/static-files/
-
-STATIC_URL = '/static/'
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
