@@ -1,21 +1,32 @@
 {
-    "name": "aula-gpt-frontend",
-    "version": "1.0.0",
-    "scripts": {
-      "start": "react-scripts start",
-      "build": "react-scripts build",
-      "test": "react-scripts test",
-      "eject": "react-scripts eject"
-    },
-    "dependencies": {
-      "react": "^17.0.0",
-      "react-dom": "^17.0.0",
-      "react-scripts": "^4.0.0",
-      "serve": "^11.3.2"
-    },
-    "devDependencies": {},
-    "engines": {
-      "node": "14.x"
-    }
+  "name": "aula-gpt-frontend",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "dependencies": {
+    "react": "^17.0.0",
+    "react-dom": "^17.0.0",
+    "react-scripts": "^4.0.0",
+    "serve": "^11.3.2"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": "14.x"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
-  
+}

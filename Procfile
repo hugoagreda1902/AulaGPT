@@ -1,1 +1,1 @@
-web: gunicorn aula_gpt_backend.wsgi --bind 0.0.0.0:5000 & serve -s aula-gpt-frontend/build -l 3000
+web: gunicorn aula_gpt_backend.wsgi --bind 0.0.0.0:5000

@@ -2,6 +2,13 @@ import os
 from pathlib import Path
 import dj_database_url
 
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Configuración de archivos estáticos
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'staticfiles/frontend')]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 # Configuración de la clave secreta
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-default_secret_key')
 
@@ -20,7 +27,6 @@ DATABASES = {
         ssl_require=True
     )
 }
-
 
 # Root URL configuration
 ROOT_URLCONF = 'aula_gpt_backend.urls'
