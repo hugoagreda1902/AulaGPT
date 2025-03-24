@@ -1,1 +1,1 @@
-web: cd aula-gpt-backend && gunicorn aula_gpt_backend.wsgi --log-file - & cd aula-gpt-frontend && npm install && npm run build && serve -s build
+web: gunicorn aula_gpt_backend.wsgi --bind 0.0.0.0:$PORT && npm run --prefix aula-gpt-frontend start
