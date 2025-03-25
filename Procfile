@@ -1,1 +1,1 @@
-web: gunicorn aula_gpt_backend.wsgi --bind 0.0.0.0:$PORT
+web: waitress-serve --port=$PORT aula-gpt-backend.aula_gpt_backend.wsgi:application
