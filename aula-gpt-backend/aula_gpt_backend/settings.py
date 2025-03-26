@@ -29,11 +29,11 @@ ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'aula_gpt_db',  # Asegúrate de que este nombre coincida
+        'NAME': 'aulagpt_db',  # Asegúrate de que este nombre coincida
         'USER': 'root',  # Reemplaza con tu nombre de usuario de MySQL
         'PASSWORD': '1234',  # Reemplaza con tu contraseña
         'HOST': 'localhost',  # O la IP del servidor si no está local
-        'PORT': '3307',  # El puerto por defecto de MySQL
+        'PORT': '3306',  # El puerto por defecto de MySQL
     }
 }
 
