@@ -3,7 +3,7 @@ import React from 'react';
 function App() {
   return (
     <div>
-      <h1>¡La aplicación está funcionando correctamente!</h1>
+      <h1>¡La aplicación está funcionando correctamente! hello</h1>
     </div>
   );
 }
