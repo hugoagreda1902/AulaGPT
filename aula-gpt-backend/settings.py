@@ -2,6 +2,12 @@ import os
 from pathlib import Path
 import dj_database_url
 
+import environ
+
+env = environ.Env()
+# Lee el archivo .env
+environ.Env.read_env()
+
 # Seguridad
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'default_secret_key')  # Usa 'default_secret_key' solo para pruebas locales
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
@@ -16,8 +22,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 DATABASE_URL = os.getenv('DATABASE_URL')
 
 DATABASES = {
-    'default': dj_database_url.parse(os.getenv('DATABASE_URL', 'mysql://root:1234@localhost:3306/aulagpt_db'))
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT', '3306'),
+    }
 }
+
 
 
 # Autenticación
