@@ -1,9 +1,7 @@
 from django.contrib import admin
-from django.urls import path, re_path
-from django.views.generic import TemplateView
-from . import views  # Importar las vistas
+from django.urls import path, include
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    re_path(r'^.*$', TemplateView.as_view(template_name='index.html'), name='home'), 
+    path('admin/', admin.site.urls),  # Admin de Django
+    path('api/', include('AULAGPT.urls')),  # Enlaza las rutas de la app principal
 ]
