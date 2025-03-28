@@ -16,13 +16,17 @@ ALLOWED_HOSTS = ['aulagpt.net', 'www.aulagpt.net']
 # Ruta de base del proyecto
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Configuración de la base de datos (usando SQLite)
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',  # El archivo SQLite se almacenará en la raíz del proyecto
+        'ENGINE': 'django.db.backends.mysql',  # Motor de MySQL
+        'NAME': os.getenv('DB_NAME'),          # Nombre de la base de datos
+        'USER': os.getenv('DB_USER'),          # Usuario de la base de datos
+        'PASSWORD': os.getenv('DB_PASSWORD'),  # Contraseña de la base de datos
+        'HOST': os.getenv('DB_HOST'),          # Host de la base de datos
+        'PORT': os.getenv('DB_PORT', '3306'),  # Puerto (por defecto es 3306)
     }
 }
+
 
 # Autenticación
 AUTHENTICATION_BACKENDS = (
