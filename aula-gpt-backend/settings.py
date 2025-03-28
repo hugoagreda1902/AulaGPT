@@ -1,11 +1,9 @@
 import os
 from pathlib import Path
-import dj_database_url
-
 import environ
 
-env = environ.Env()
 # Lee el archivo .env
+env = environ.Env()
 environ.Env.read_env()
 
 # Seguridad
@@ -13,40 +11,32 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'default_secret_key')  # Usa 'defaul
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 # Dirección del sitio (AGREGADO PARA ALLOWED_HOSTS)
-ALLOWED_HOSTS = ['aula-gpt.net', 'www.aula-gpt.net']
+ALLOWED_HOSTS = ['aulagpt.net', 'www.aulagpt.net']
 
 # Ruta de base del proyecto
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Configuración de la base de datos
-DATABASE_URL = os.getenv('DATABASE_URL')
-
+# Configuración de la base de datos (usando SQLite)
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT', '3306'),
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',  # El archivo SQLite se almacenará en la raíz del proyecto
     }
 }
-
-
 
 # Autenticación
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
-# Archivos estáticos y de medios (modificar según lo necesario)
+# Archivos estáticos y de medios
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# Middleware (opciones de seguridad adicionales)
+# Middleware
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -63,7 +53,7 @@ LOGIN_REDIRECT_URL = '/'
 # URL de redirección después de cerrar sesión
 LOGOUT_REDIRECT_URL = '/'
 
-# Aplicaciones instaladas (verifica las aplicaciones de tu proyecto)
+# Aplicaciones instaladas
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
