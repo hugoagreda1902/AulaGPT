@@ -1,6 +1,8 @@
 import os
 from pathlib import Path
 import environ
+import dj_database_url
+from dotenv import load_dotenv
 
 # Lee el archivo .env
 env = environ.Env()
@@ -16,16 +18,19 @@ ALLOWED_HOSTS = ['aulagpt.net', 'www.aulagpt.net']
 # Ruta de base del proyecto
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+load_dotenv()  # Carga las variables del .env
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',  # Motor de MySQL
-        'NAME': os.getenv('DB_NAME'),          # Nombre de la base de datos
-        'USER': os.getenv('DB_USER'),          # Usuario de la base de datos
-        'PASSWORD': os.getenv('DB_PASSWORD'),  # Contraseña de la base de datos
-        'HOST': os.getenv('DB_HOST'),          # Host de la base de datos
-        'PORT': os.getenv('DB_PORT', '3306'),  # Puerto (por defecto es 3306)
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'aulagpt_db',
+        'USER': 'root',
+        'PASSWORD': '1234',
+        'HOST': 'aulagpt-backend.fly.dev',
+        'PORT': '3306',
     }
 }
+
 
 
 # Autenticación

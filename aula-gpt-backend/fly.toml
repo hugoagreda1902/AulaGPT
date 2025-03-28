@@ -1,23 +1,26 @@
-
-# fly.toml app configuration file generated for aula-gpt-backend on 2025-03-27T22:51:48+01:00
+# fly.toml app configuration file generated for aulagpt-backend on 2025-03-28T20:59:08+01:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'aula-gpt-backend'
+app = 'aulagpt-backend'
 primary_region = 'mad'
 
-
 [build]
-  dockerfile = "Dockerfile"
+  dockerfile = 'Dockerfile'
 
-[http_service]
-  internal_port = 8080
-  force_https = true
-  auto_stop_machines = 'stop'
-  auto_start_machines = true
-  min_machines_running = 0
-  processes = ['app']
+[env]
+  ALLOWED_HOSTS = 'aulagpt-backend.fly.dev'
+  DEBUG = 'false'
+  DJANGO_SECRET_KEY = 'tu_clave_secreta'
+
+[[services]]
+  protocol = 'tcp'
+  internal_port = 8000
+
+  [[services.ports]]
+    port = 80
+    handlers = ['http']
 
 [[vm]]
   memory = '1gb'
