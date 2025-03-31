@@ -1,7 +1,6 @@
 import os
 from pathlib import Path
 import environ
-import dj_database_url
 from dotenv import load_dotenv
 
 # Lee el archivo .env
@@ -23,15 +22,13 @@ load_dotenv()  # Carga las variables del .env
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'aulagpt_db',
-        'USER': 'root',
-        'PASSWORD': '1234',
-        'HOST': 'mysql_data',
-        'PORT': '3306',
+        'NAME': os.getenv('MYSQL_DATABASE', 'aulagpt_db'),  # Nombre de la base de datos
+        'USER': os.getenv('MYSQL_USER', 'root'),             # Usuario MySQL
+        'PASSWORD': os.getenv('MYSQL_PASSWORD', '1234'),     # Contraseña del usuario
+        'HOST': '127.0.0.1',                                 # Dirección local para Fly.io
+        'PORT': '3306',                                      # Puerto de MySQL
     }
 }
-
-
 
 # Autenticación
 AUTHENTICATION_BACKENDS = (
