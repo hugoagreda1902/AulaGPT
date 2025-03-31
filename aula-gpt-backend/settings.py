@@ -26,7 +26,7 @@ DATABASES = {
         'NAME': 'aulagpt_db',
         'USER': 'root',
         'PASSWORD': '1234',
-        'HOST': 'aulagpt-backend.fly.dev',
+        'HOST': 'mysql_data',
         'PORT': '3306',
     }
 }

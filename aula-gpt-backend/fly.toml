@@ -1,29 +1,28 @@
-app = "aulagpt-mysql"
-primary_region = "mad"
+# fly.toml file for app aulagpt-backend
 
-[build]
+app = "aulagpt-backend"
+primary_region = "mad"  # Cambiar por la región que estás usando
 
 [env]
-  MYSQL_DATABASE = "aulagpt_db"
-  MYSQL_USER = "aulagpt_user"
-  MYSQL_PASSWORD = "1234"
   MYSQL_ROOT_PASSWORD = "1234"
+  MYSQL_PASSWORD = "1234"
+  DATABASE_URL = "mysql://root:1234@mysql-data:3306/aulagpt_db"
 
 [mounts]
-  source = "mysql_data"
-  destination = "/var/lib/mysql"
+  source = "mysql_data"  # Nombre del volumen
+  destination = "/var/lib/mysql"  # Ruta donde se debe montar el volumen dentro del contenedor
+
+[build]
+  image = "registry.fly.io/aulagpt-backend:latest"
+  dockerfile = "./Dockerfile"
 
 [services]
-  [[services.ports]]
-    handlers = ["tls", "http"]
-    port = 3306
+  [[services.http_checks]]
+    grace_period = "30s"
+    interval = "10s"
+    timeout = "2s"
+    url = "http://localhost:8000"  # Cambiar por el puerto en el que se expone tu app
 
   [[services.ports]]
-    port = 3306
-    handlers = ["pg_tls"]
-
-  [[services.tcp_checks]]
-    grace_period = "10s"
-    interval = "30s"
-    timeout = "5s"
-    restart_limit = 6
+    handlers = ["http"]
+    port = 80
