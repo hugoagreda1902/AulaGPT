@@ -1,10 +1,26 @@
-// src/API/dataService.js
-import axios from 'axios';
+import { db } from '../firebase';  // Importa la instancia de Firebase
 
-const API_URL = 'http://localhost:8000/api/'; // La URL de tu backend (ajusta según tu configuración)
+export const addUser = async (user) => {
+  try {
+    const docRef = await db.collection('users').add({
+      name: user.name,
+      email: user.email,
+      password: user.password,  // Asegúrate de manejar contraseñas de manera segura
+    });
+    console.log("User added with ID: ", docRef.id);
+    return docRef.id;
+  } catch (error) {
+    console.error("Error adding user: ", error);
+  }
+};
 
-export const getUsuarios = () => {
-  return axios.get(API_URL + 'usuarios/')
-    .then(response => response.data)
-    .catch(error => console.error('Error al obtener usuarios:', error));
+// Esta función obtiene los usuarios de la base de datos (para pruebas)
+export const getUsers = async () => {
+  try {
+    const querySnapshot = await db.collection('users').get();
+    const users = querySnapshot.docs.map(doc => doc.data());
+    return users;
+  } catch (error) {
+    console.error("Error getting users: ", error);
+  }
 };

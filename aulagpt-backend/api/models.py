@@ -1,9 +1,11 @@
+# api/models.py
 from django.db import models
 
-class ContactForm(models.Model):
-    name = models.CharField(max_length=100)
-    email = models.EmailField()
-    message = models.TextField()
+class User(models.Model):
+    id = models.AutoField(primary_key=True)  # ID autoincremental
+    nombre = models.CharField(max_length=100)  # Nombre del usuario
+    correo = models.EmailField(unique=True)  # Correo electrónico único
+    password = models.CharField(max_length=255)  # Contraseña del usuario
 
     def __str__(self):
-        return self.name
+        return self.nombre

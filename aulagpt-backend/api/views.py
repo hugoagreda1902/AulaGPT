@@ -1,11 +1,8 @@
 # api/views.py
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from .serializers import UsuarioSerializer
-from .models import Usuario
+from rest_framework import viewsets
+from .models import User
+from .serializers import UserSerializer
 
-class UsuarioListView(APIView):
-    def get(self, request):
-        usuarios = Usuario.objects.all()
-        serializer = UsuarioSerializer(usuarios, many=True)
-        return Response(serializer.data)
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()  # Obtiene todos los usuarios
+    serializer_class = UserSerializer  # Usa el serializador para devolver los datos

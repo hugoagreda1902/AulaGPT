@@ -1,8 +1,13 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import App from './App';
 
-test('renders learn react link', () => {
+test('sends user data on form submit', async () => {
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+  fireEvent.change(screen.getByPlaceholderText('Nombre'), { target: { value: 'Juan' } });
+  fireEvent.change(screen.getByPlaceholderText('Correo'), { target: { value: 'juan@example.com' } });
+  fireEvent.change(screen.getByPlaceholderText('Contraseña'), { target: { value: '123456' } });
+  fireEvent.click(screen.getByText('Agregar Usuario'));
+  
+  // Verificar que el mensaje de éxito se muestra
+  expect(await screen.findByText(/Usuario agregado con ID/i)).toBeInTheDocument();
 });

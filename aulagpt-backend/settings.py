@@ -1,3 +1,5 @@
+# settings.py
+
 import os
 from pathlib import Path
 import environ
@@ -8,29 +10,26 @@ env = environ.Env()
 environ.Env.read_env()
 
 # Seguridad
-SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'default_secret_key')  # Usa 'default_secret_key' solo para pruebas locales
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'default_secret_key')
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-# Dirección del sitio (AGREGADO PARA ALLOWED_HOSTS)
 ALLOWED_HOSTS = ['aulagpt.net', 'www.aulagpt.net']
 
-# Ruta de base del proyecto
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-load_dotenv()  # Carga las variables del .env
+load_dotenv()
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('MYSQL_DATABASE', 'aulagpt_db'),  # Nombre de la base de datos
-        'USER': os.getenv('MYSQL_USER', 'root'),             # Usuario MySQL
-        'PASSWORD': os.getenv('MYSQL_PASSWORD', '1234'),     # Contraseña del usuario
-        'HOST': '127.0.0.1',                                 # Dirección local para Fly.io
-        'PORT': '3306',                                      # Puerto de MySQL
+        'NAME': os.getenv('MYSQL_DATABASE', 'aulagpt_db'),
+        'USER': os.getenv('MYSQL_USER', 'root'),
+        'PASSWORD': os.getenv('MYSQL_PASSWORD', '1234'),
+        'HOST': os.getenv('MYSQL_HOST', '127.0.0.1'),
+        'PORT': os.getenv('MYSQL_PORT', '3306'),
     }
 }
 
-# Autenticación
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
@@ -42,7 +41,6 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# Middleware
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -50,28 +48,25 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware', 
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',  # Middleware para CORS
 ]
 
-# URL de redirección después de iniciar sesión
 LOGIN_REDIRECT_URL = '/'
-
-# URL de redirección después de cerrar sesión
 LOGOUT_REDIRECT_URL = '/'
 
-# Aplicaciones instaladas
 INSTALLED_APPS = [
-    'django.contrib.admin', # Panel de administración
-    'django.contrib.auth', # Autenticación
-    'django.contrib.contenttypes', # Tipos de contenido
-    'django.contrib.sessions', # Sesiones
-    'django.contrib.messages', # Mensajes
-    'django.contrib.staticfiles', # Archivos estáticos
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'rest_framework',  # Django Rest Framework
+    'corsheaders',     # Middleware de CORS
     # Otras apps de tu proyecto
 ]
 
-# Plantillas y configuraciones adicionales
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -88,13 +83,9 @@ TEMPLATES = [
     },
 ]
 
-# Configuración de la zona horaria
 TIME_ZONE = 'UTC'
-
-# Configuración de la lengua
 LANGUAGE_CODE = 'en-us'
 
-# Configuración de la base de datos para sesiones, caché, etc.
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True

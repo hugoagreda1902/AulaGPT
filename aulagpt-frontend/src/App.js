@@ -1,26 +1,43 @@
-// src/App.js
-import React, { useState, useEffect } from 'react';
-import { getUsuarios } from './api/dataService'; // Importa la función para obtener usuarios
+import React, { useState } from 'react';
+import { addUser } from './api/dataService';  // Importa el servicio para agregar un usuario
+import './App.css';
 
 function App() {
-  const [usuarios, setUsuarios] = useState([]);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-  useEffect(() => {
-    getUsuarios().then(data => {
-      setUsuarios(data);  // Guarda los usuarios obtenidos en el estado
-    });
-  }, []);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const user = { name, email, password };
+    const userId = await addUser(user);
+    alert(`Usuario agregado con ID: ${userId}`);
+  };
 
   return (
-    <div>
-      <h1>Lista de Usuarios</h1>
-      <ul>
-        {usuarios.map(usuario => (
-          <li key={usuario.id}>
-            {usuario.nombre} - {usuario.email}
-          </li>
-        ))}
-      </ul>
+    <div className="App">
+      <h1>Formulario de Usuario</h1>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          placeholder="Nombre"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+        <input
+          type="email"
+          placeholder="Correo"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <input
+          type="password"
+          placeholder="Contraseña"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <button type="submit">Agregar Usuario</button>
+      </form>
     </div>
   );
 }

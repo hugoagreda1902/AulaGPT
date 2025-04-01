@@ -1,8 +1,8 @@
 # api/serializers.py
 from rest_framework import serializers
-from .models import Usuario  # Importa tu modelo
+from .models import User  # Asegúrate de importar el modelo adecuado
 
-class UsuarioSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Usuario
-        fields = '__all__'  # Incluye todos los campos del modelo
+        model = User  # El modelo de tu tabla de usuarios
+        fields = ['id', 'nombre', 'correo', 'password']  # Los campos que deseas exponer
