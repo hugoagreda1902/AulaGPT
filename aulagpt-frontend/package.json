@@ -17,7 +17,9 @@
     "web-vitals": "^4.2.4"
   },
   "devDependencies": {
-    "dotenv": "^16.0.0"
+    "dotenv": "^16.0.0",
+    "sass": "^1.86.1",
+    "sass-loader": "^16.0.5"
   },
   "scripts": {
     "start": "react-scripts start",
