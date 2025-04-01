@@ -69,8 +69,6 @@ INSTALLED_APPS = [
     'django.contrib.messages', # Mensajes
     'django.contrib.staticfiles', # Archivos estáticos
     # Otras apps de tu proyecto
-    'rest_framework', # Django REST Framework
-    'corsheaders',  # Para manejar CORS
 ]
 
 # Plantillas y configuraciones adicionales
