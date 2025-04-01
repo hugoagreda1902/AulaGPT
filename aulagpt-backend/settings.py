@@ -50,7 +50,8 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware', 
+    'corsheaders.middleware.CorsMiddleware',  # Middleware para CORS
 ]
 
 # URL de redirección después de iniciar sesión
@@ -61,13 +62,15 @@ LOGOUT_REDIRECT_URL = '/'
 
 # Aplicaciones instaladas
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
+    'django.contrib.admin', # Panel de administración
+    'django.contrib.auth', # Autenticación
+    'django.contrib.contenttypes', # Tipos de contenido
+    'django.contrib.sessions', # Sesiones
+    'django.contrib.messages', # Mensajes
+    'django.contrib.staticfiles', # Archivos estáticos
     # Otras apps de tu proyecto
+    'rest_framework', # Django REST Framework
+    'corsheaders',  # Para manejar CORS
 ]
 
 # Plantillas y configuraciones adicionales

@@ -1,4 +1,8 @@
-## Árbol de Directorios del Proyecto Aula-GPT
+# 📚 AulaGPT
+
+AulaGPT es un asistente inteligente para alumnos y profesores, diseñado para mejorar la experiencia educativa mediante el uso de IA.
+
+## 📂 Estructura del Proyectonpm install firebase
 
 ```plaintext
 Aula-GPT/

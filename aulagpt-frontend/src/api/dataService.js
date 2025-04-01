@@ -1,11 +1,10 @@
-import axios from "axios";
+// src/API/dataService.js
+import axios from 'axios';
 
-export const fetchData = async () => {
-  try {
-    const response = await axios.get("http://localhost:8000/api/endpoint/");
-    return response.data;
-  } catch (error) {
-    console.error("Error al obtener los datos:", error);
-    throw error;
-  }
+const API_URL = 'http://localhost:8000/api/'; // La URL de tu backend (ajusta según tu configuración)
+
+export const getUsuarios = () => {
+  return axios.get(API_URL + 'usuarios/')
+    .then(response => response.data)
+    .catch(error => console.error('Error al obtener usuarios:', error));
 };
