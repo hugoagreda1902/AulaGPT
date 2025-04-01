@@ -15,8 +15,6 @@ Aula-GPT/
 │   ├── __init__.py                             # Inicialización del proyecto backend.
 │   ├── .env                                    # Variables de entorno del backend.
 │   ├── asgi.py                                 # Configuración ASGI.
-│   ├── Dockerfile                              # Configuración de Docker.
-│   ├── fly.toml                                # Configuración de despliegue en Fly.io.
 │   ├── manage.py                               # Herramienta de gestión de Django.
 │   ├── requirements.txt                        # Dependencias del backend.
 │   ├── settings.py                             # Configuración principal del proyecto.
