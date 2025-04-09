@@ -1,8 +1,9 @@
 # api/views.py
-from rest_framework import viewsets
-from .models import User
-from .serializers import UserSerializer
+from django.shortcuts import render
+from django.views.generic import ListView
+from .models import Usuario  # Asegúrate de importar tu modelo correctamente
 
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()  # Obtiene todos los usuarios
-    serializer_class = UserSerializer  # Usa el serializador para devolver los datos
+class UsuarioListView(ListView):
+    model = Usuario
+    template_name = 'usuario_list.html'  # Nombre del archivo de plantilla
+    context_object_name = 'usuarios'  # Nombre que tendrá la lista de usuarios en el contexto

@@ -1,5 +1,3 @@
-# settings.py
-
 import os
 from pathlib import Path
 import environ
@@ -13,12 +11,15 @@ environ.Env.read_env()
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'default_secret_key')
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ['aulagpt.net', 'www.aulagpt.net']
+ALLOWED_HOSTS = ['aulagpt.net', 'www.aulagpt.net', '127.0.0.1']
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv()
 
+
+
+# Base de Datos
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -30,6 +31,10 @@ DATABASES = {
     }
 }
 
+# Configuración de URL
+ROOT_URLCONF = 'api.urls'  # Nombre de tu proyecto y archivo urls.py
+
+# Autenticación
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
@@ -56,16 +61,16 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'rest_framework',  # Django Rest Framework
-    'corsheaders',     # Middleware de CORS
-    # Otras apps de tu proyecto
+    'django.contrib.auth',       # Para la autenticación
+    'django.contrib.contenttypes',  # Necesario para el sistema de permisos de Django
+    'django.contrib.sessions',   # Para el manejo de sesiones
+    'django.contrib.messages',   # Para mostrar mensajes a los usuarios
+    'django.contrib.admin',      # Si quieres usar el admin de Django
+    'api',  # Tu app personalizada
 ]
+
+
+
 
 TEMPLATES = [
     {
