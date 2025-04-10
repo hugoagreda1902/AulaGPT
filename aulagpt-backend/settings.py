@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 # Lee el archivo .env
 env = environ.Env()
 environ.Env.read_env()
+load_dotenv()
 
 # Seguridad
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'default_secret_key')
@@ -13,11 +14,7 @@ DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = ['aulagpt.net', 'www.aulagpt.net', '127.0.0.1']
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-load_dotenv()
-
-
+BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 
 # Base de Datos
 DATABASES = {
@@ -54,28 +51,30 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',  # Middleware para CORS
+    'django.contrib.admin.middleware.AdminMiddleware',  # Este es el middleware para el admin
 ]
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 INSTALLED_APPS = [
-    'django.contrib.auth',       # Para la autenticación
-    'django.contrib.contenttypes',  # Necesario para el sistema de permisos de Django
-    'django.contrib.sessions',   # Para el manejo de sesiones
-    'django.contrib.messages',   # Para mostrar mensajes a los usuarios
-    'django.contrib.admin',      # Si quieres usar el admin de Django
-    'api',  # Tu app personalizada
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'api',  # Tu app
 ]
 
-
-
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'  # Para evitar warnings en migraciones
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            BASE_DIR / 'templates',  # Este es el directorio base donde están tus plantillas
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -87,6 +86,9 @@ TEMPLATES = [
         },
     },
 ]
+
+# Configuración para personalizar el modelo de usuario
+AUTH_USER_MODEL = 'api.Usuario'  # Asegúrate de que esté apuntando a tu modelo Usuario
 
 TIME_ZONE = 'UTC'
 LANGUAGE_CODE = 'en-us'

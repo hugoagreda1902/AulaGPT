@@ -1,8 +1,7 @@
-# api/serializers.py
 from rest_framework import serializers
-from .models import User  # Asegúrate de importar el modelo adecuado
+from django.contrib.auth.models import User  # Importa el modelo User de Django
 
-class UserSerializer(serializers.ModelSerializer):
+class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User  # El modelo de tu tabla de usuarios
-        fields = ['id', 'nombre', 'correo', 'password']  # Los campos que deseas exponer
+        model = User  # Utilizamos el modelo User de Django
+        fields = ['id', 'username', 'first_name', 'last_name', 'email']  # Los campos que quieres mostrar

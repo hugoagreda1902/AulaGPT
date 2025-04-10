@@ -1,8 +1,9 @@
+# aulagpt-backend/urls.py
+
+from django.contrib import admin
 from django.urls import path
-from . import views  # Asegúrate de que las vistas están importadas correctamente
-from .views import UsuarioListView  # Asegúrate de que esta vista existe en views.py
 
 urlpatterns = [
-    # Aquí agregas las rutas correspondientes a tus vistas
-    path('usuarios/', views.UsuarioListView.as_view(), name='usuario_list'),
+    path('admin/', admin.site.urls),  # Ruta para acceder al panel de administración
+    # Aquí puedes agregar otras rutas si tienes otras vistas personalizadas
 ]
