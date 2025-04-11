@@ -51,20 +51,25 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.contrib.admin.middleware.AdminMiddleware',  # Este es el middleware para el admin
+    'corsheaders.middleware.CorsMiddleware', # Middleware para CORS
 ]
 
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
-
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'api',  # Tu app
+    # Django apps que no creas tablas en la base de datos
+    'django.contrib.admin',  # Para administración (si la necesitas)
+    'django.contrib.auth',  # Si quieres usar autenticación
+    'django.contrib.contenttypes',  # Para gestionar tipos de contenido
+    'django.contrib.sessions',  # Si vas a usar sesiones (por ejemplo, autenticación)
+    'django.contrib.messages',  # Para manejo de mensajes
+    'django.contrib.staticfiles',  # Si vas a manejar archivos estáticos
+    'corsheaders',  # Para CORS, si lo necesitas
+    'api',  # Tu propia aplicación (cambia 'api' por el nombre de tu app)
+]
+
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    # Agrega otras URLs si es necesario
 ]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'  # Para evitar warnings en migraciones
@@ -87,8 +92,6 @@ TEMPLATES = [
     },
 ]
 
-# Configuración para personalizar el modelo de usuario
-AUTH_USER_MODEL = 'api.Usuario'  # Asegúrate de que esté apuntando a tu modelo Usuario
 
 TIME_ZONE = 'UTC'
 LANGUAGE_CODE = 'en-us'

@@ -1,9 +1,6 @@
-# aulagpt-backend/urls.py
-
-from django.contrib import admin
 from django.urls import path
+from .views import UsuarioList
 
 urlpatterns = [
-    path('admin/', admin.site.urls),  # Ruta para acceder al panel de administración
-    # Aquí puedes agregar otras rutas si tienes otras vistas personalizadas
+    path('api/usuarios/', UsuarioList.as_view(), name='usuario-list'),
 ]
