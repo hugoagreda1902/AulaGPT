@@ -29,12 +29,15 @@ DATABASES = {
 }
 
 # Configuración de URL
-ROOT_URLCONF = 'api.urls'  # Nombre de tu proyecto y archivo urls.py
+ROOT_URLCONF = 'urls'  # Nombre de tu proyecto y archivo urls.py
 
 # Autenticación
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
+
+AUTH_USER_MODEL = 'api.Usuario'
+
 
 # Archivos estáticos y de medios
 STATIC_URL = '/static/'
