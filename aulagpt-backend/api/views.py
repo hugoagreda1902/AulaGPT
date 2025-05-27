@@ -6,9 +6,10 @@ from .serializers import (
     TestAnswerSerializer, ActivitySerializer
 )
 
+# ViewSet para el modelo User, permite CRUD completo
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
-    serializer_class = UserSerializer
+    serializer_class = UserSerializer        # Serializador para convertir datos a JSON y viceversa
 
 class ClassViewSet(viewsets.ModelViewSet):
     queryset = Class.objects.all()
