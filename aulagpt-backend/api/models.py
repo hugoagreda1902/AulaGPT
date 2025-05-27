@@ -108,7 +108,7 @@ class TestAnswer (models.Model):
         return f"Answer by {self.user} on {self.answer_date}"
     
 class Activity(models.Model):
-    activity_id = models.AutoField(primary_key=True)                                               # ID del registro de actividad
+    activity_id = models.AutoField(primary_key=True)                                              # ID del registro de actividad
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='activities')            # FK al usuario
     ACTIVITY_TYPES = (
         ('upload', 'Upload'),
