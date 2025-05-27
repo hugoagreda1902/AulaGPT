@@ -1,65 +1,97 @@
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 
-class UsuarioManager(BaseUserManager):
-    def create_user(self, correo, nombre_usuario, password=None, **extra_fields):
-        """
-        Crea y guarda un usuario con un correo y contraseña.
-        """
-        if not correo:
-            raise ValueError('El correo es obligatorio')
-        correo = self.normalize_email(correo)
-        user = self.model(correo=correo, nombre_usuario=nombre_usuario, **extra_fields)  # Aceptar extra_fields
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
-
-    def create_superuser(self, correo, nombre_usuario, password=None, **extra_fields):
-        """
-        Crea y guarda un superusuario con correo, nombre de usuario y contraseña.
-        """
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', True)
-
-        # Verifica si los campos adicionales están configurados correctamente
-        if extra_fields.get('is_staff') is not True:
-            raise ValueError('El superusuario debe tener is_staff=True')
-        if extra_fields.get('is_superuser') is not True:
-            raise ValueError('El superusuario debe tener is_superuser=True')
-
-        return self.create_user(correo, nombre_usuario, password, **extra_fields)
-
-    
-class Usuario(AbstractBaseUser, PermissionsMixin):
-    correo = models.EmailField(unique=True, db_column='correo')  # Renombrado en DB
-    usuario = models.CharField(max_length=150, unique=True, db_column='usuario')  # Renombrado en DB
-    nombre = models.CharField(max_length=30, default='Null', db_column='nombre')  # Renombrado en DB
-    apellido = models.CharField(max_length=30, default='Null', db_column='apellido')  # Renombrado en DB
-    activo = models.BooleanField(default=True, db_column='activo')  # Renombrado en DB
-    es_staff = models.BooleanField(default=False, db_column='es_staff')  # Renombrado en DB
-
-    objects = UsuarioManager()
-
-    USERNAME_FIELD = 'correo'  # Modificado para usar 'correo' como campo principal de inicio de sesión
-    REQUIRED_FIELDS = ['nombre_usuario', 'nombre', 'apellido']
+class User(models.Model):
+    # Opciones posibles para el rol del usuario
+    ROLE_CHOICES = (
+        ('student', 'Student'),
+        ('teacher', 'Teacher'),
+    )
+    user_id = models.AutoField(primary_key=True)                  # ID autoincremental como PK
+    name = models.CharField(max_length=100)                       # Nombre del usuario
+    surname = models.CharField(max_length=100)                    # Apellido del usuario
+    email = models.EmailField(unique=True)                        # Email único para cada usuario
+    role = models.CharField(max_length=7, choices=ROLE_CHOICES)
 
     def __str__(self):
-        return self.correo
+        return f"{self.name} {self.surname} ({self.role})"
     
-class Usuario(AbstractBaseUser, PermissionsMixin):
-    correo = models.EmailField(unique=True)
-    usuario = models.CharField(max_length=150, unique=True)
-    primer_nombre = models.CharField(max_length=30, default='Null')
-    apellido = models.CharField(max_length=30, default='Null')
-    is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
-    is_superuser = models.BooleanField(default=False)
 
-    # Otros campos y configuraciones
-    objects = UsuarioManager()
-
-    USERNAME_FIELD = 'correo'
-    REQUIRED_FIELDS = ['usuario', 'nombre', 'apellido']
+class Class (models.Model):
+    class_id = models.AutoField(primary_key=True)                 # ID autoincremental como PK 
+    class_name = models.CharField(max_length=100)                 # Nombre descriptivo de la clase
+    acces_code = models.CharField(max_length=20, unique=True)     # Código para unirse a la clase (único)
+    
+    users = models.ManyToManyField(User, through=UserClass)       # Relación ManyToMany con usuarios, usando tabla intermedia UserClass
 
     def __str__(self):
-        return self.correo
+        return self.class_name
+    
+class UserClass (models.Model):
+    # Modelo intermedio para relacionar usuarios y clases
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)      # FK a User
+    class_id = models.ForeignKey(Class, on_delete=models.CASCADE)    # FK a Class
+
+    class Meta:
+        unique_together = ('user', 'class_id')                       # No permitir duplacados en la relación
+    
+    def __str__(self):
+        return f"{self.user} in {self.class_id}"
+    
+class Documents (models.Model):
+    document_id = models.AutoField (primary_key=True)                                            # ID autoincremental del documento
+    class_id = models.ForeignKey (Class, on_delete=models.CASCADE, related_name='documents')     # FK a la clase a la que pertenece
+    file_name = models.CharField (max_length=200)                                                # Nombre del archivo
+    file_type = models.CharField (max_length=10)                                                 # Tipo de archivo (PDF, DOCX...)
+    upload_date = models.DateTimeField (auto_now_add=True)                                       # Fecha automática de subida
+    drive_link = models.URLField ()                                                              # URL del archivo en Google Drive
+
+    def __str__(self):
+        return self.file_name
+
+class Tests (models.Model):
+    test_id = models.AutoField (primary_key=True)                                                # No permitir duplacados en la relación
+    user_id = models.ForeignKey (User, on_delete=models.CASCADE, related_name='tests_created')   # FK al alumno creador del test
+    document_id = models.ForeignKey (Documents, on_delete=models.CASCADE, related_name='tests')  # FK al codumento usado para el test
+    test_name = models.CharField (max_length=200)                                                # Nombre del test                                        
+    creation_date = models.DateTimeField (auto_now_add=True)                                     # Fecha de creación automática
+
+    def __str__(self):
+        return self.test_name
+    
+class TestQuestion (models.Model):
+    question_id = models.AutoField (primary_key=True)                                              # ID de la pregunta
+    test_id = models.ForeignKey (Tests, on_delete=models.CASCADE, related_name='questions')        # FK al test
+    question_text = models.TextField ()                      # Texto de la pregunta 
+    option_1 = models.CharField (max_length=200)             # Opción 1
+    option_2 = models.CharField (max_length=200)             # Opción 2
+    option_3 = models.CharField (max_length=200)             # Opción 3
+    correct_option = models.CharField (max_length=10)        # Opción correcta
+
+    def __str__(self):
+        return self.question_text[:50]                       # Muestra los primeros 50 caracteres
+
+class TestAnswer (models.Model):
+    answer_id = models.AutoField(primary_key=True)                                                 # ID de la respuesta
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='answers')               # FK al usuario que responde
+    test = models.ForeignKey(Tests, on_delete=models.CASCADE, related_name='answers')              # FK al test contestado
+    question = models.ForeignKey(TestQuestion, on_delete=models.CASCADE, related_name='answers')   # FK a la pregunta respondida
+    selected_option = models.CharField(max_length=10)                                              # Opción elegida por el alumno
+    is_correct = models.BooleanField()                                                             # Si la respuesta es correcta o no
+    answer_date = models.DateTimeField(auto_now_add=True)                                          # Fecha y hora de la respuesta
+
+    def __str__(self):
+        return f"Answer by {self.user} on {self.answer_date}"
+    
+class Activity(models.Model):
+    activity_id = models.AutoField(primary_key=True)                                               # ID del registro de actividad
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='activities')            # FK al usuario
+    ACTIVITY_TYPES = (
+        ('upload', 'Upload'),
+        ('test', 'Test'),
+        ('answer', 'Answer'),
+    )
+    activity_type = models.CharField(max_length=10, choices=ACTIVITY_TYPES)                        # Tipo de actividad
+    timestamp = models.DateTimeField(auto_now_add=True)                                            # Fecha y hora de la actividad
+
+    def __str__(self):
+        return f"{self.activity_type} by {self.user} at {self.timestamp}"

@@ -2,19 +2,16 @@
 
 AulaGPT es un asistente inteligente para alumnos y profesores, diseñado para mejorar la experiencia educativa mediante el uso de IA.
 
-## 📂 Estructura del Proyectonpm install firebase
-
 ```plaintext
 Aula-GPT/
 ├── aula-gpt-backend/                           # Backend: API, lógica de servidor y base de datos.
 │   ├── api/                                    # Archivos de la API (modelos, vistas, serializadores).
-│   │   ├── migrations/                         # Archivos de migración de base de datos.
 │   │   ├── __init__.py                         # Inicialización del módulo.
 │   │   ├── admin.py                            # Configuración del panel de administración.
 │   │   ├── apps.py                             # Configuración de la app.
 │   │   ├── models.py                           # Modelos de la base de datos.
 │   │   ├── serializers.py                      # Serializadores para la API.
-│   │   ├── tests.py                            # Pruebas unitarias.
+│   │   ├── urls.py                             # Pruebas unitarias.
 │   │   └── views.py                            # Vistas de la API.
 │   ├── __init__.py                             # Inicialización del proyecto backend.
 │   ├── .env                                    # Variables de entorno del backend.
@@ -23,7 +20,6 @@ Aula-GPT/
 │   ├── requirements.txt                        # Dependencias del backend.
 │   ├── settings.py                             # Configuración principal del proyecto.
 │   ├── urls.py                                 # Rutas de la API.
-│   ├── views.py                                # Definición de las vistas.
 │   └── wsgi.py                                 # Configuración WSGI.
 ├── aula-gpt-frontend/                          # Frontend: Interfaz de usuario y lógica en React.
 │   ├── public/                                 # Archivos estáticos (HTML, imágenes).
