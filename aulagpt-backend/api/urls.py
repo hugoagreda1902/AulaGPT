@@ -1,6 +1,21 @@
-from django.urls import path
-from .views import UsuarioList
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import (
+    UserViewSet, ClassViewSet, UserClassViewSet,
+    DocumentsViewSet, TestsViewSet, TestQuestionViewSet,
+    TestAnswerViewSet, ActivityViewSet
+)
+
+router = DefaultRouter()
+router.register(r'users', UserViewSet)
+router.register(r'classes', ClassViewSet)
+router.register(r'userclasses', UserClassViewSet)
+router.register(r'documents', DocumentsViewSet)
+router.register(r'tests', TestsViewSet)
+router.register(r'testquestions', TestQuestionViewSet)
+router.register(r'testanswers', TestAnswerViewSet)
+router.register(r'activities', ActivityViewSet)
 
 urlpatterns = [
-    path('api/usuarios/', UsuarioList.as_view(), name='usuario-list'),
+    path('', include(router.urls)),
 ]

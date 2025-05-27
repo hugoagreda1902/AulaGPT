@@ -1,21 +1,57 @@
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 
-class User(models.Model):
-    # Opciones posibles para el rol del usuario
+class UserManager(BaseUserManager):
+    def create_user(self, email, name, surname, role, password=None):
+        if not email:
+            raise ValueError('Users must have an email address')
+        email = self.normalize_email(email)
+        user = self.model(email=email, name=name, surname=surname, role=role)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, name, surname, role='teacher', password=None):
+        user = self.create_user(email, name, surname, role, password)
+        user.is_staff = True
+        user.is_superuser = True
+        user.save(using=self._db)
+        return user
+
+class User(AbstractBaseUser, PermissionsMixin):
     ROLE_CHOICES = (
         ('student', 'Student'),
         ('teacher', 'Teacher'),
     )
-    user_id = models.AutoField(primary_key=True)                  # ID autoincremental como PK
-    name = models.CharField(max_length=100)                       # Nombre del usuario
-    surname = models.CharField(max_length=100)                    # Apellido del usuario
-    email = models.EmailField(unique=True)                        # Email único para cada usuario
+    user_id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100)
+    surname = models.CharField(max_length=100)
+    email = models.EmailField(unique=True)
     role = models.CharField(max_length=7, choices=ROLE_CHOICES)
+
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['name', 'surname', 'role']
+
+    objects = UserManager()
 
     def __str__(self):
         return f"{self.name} {self.surname} ({self.role})"
-    
 
+    
+class UserClass (models.Model):
+    # Modelo intermedio para relacionar usuarios y clases
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)      # FK a User
+    class_id = models.ForeignKey('Class', on_delete=models.CASCADE)    # FK a Class
+
+    class Meta:
+        unique_together = ('user_id', 'class_id')                       # No permitir duplacados en la relación
+    
+    def __str__(self):
+        return f"{self.user} in {self.class_id}"
+    
 class Class (models.Model):
     class_id = models.AutoField(primary_key=True)                 # ID autoincremental como PK 
     class_name = models.CharField(max_length=100)                 # Nombre descriptivo de la clase
@@ -25,17 +61,6 @@ class Class (models.Model):
 
     def __str__(self):
         return self.class_name
-    
-class UserClass (models.Model):
-    # Modelo intermedio para relacionar usuarios y clases
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)      # FK a User
-    class_id = models.ForeignKey(Class, on_delete=models.CASCADE)    # FK a Class
-
-    class Meta:
-        unique_together = ('user', 'class_id')                       # No permitir duplacados en la relación
-    
-    def __str__(self):
-        return f"{self.user} in {self.class_id}"
     
 class Documents (models.Model):
     document_id = models.AutoField (primary_key=True)                                            # ID autoincremental del documento

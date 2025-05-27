@@ -1,7 +1,8 @@
 from django.contrib import admin
-from .models import Usuario
+from .models import User  # Asegúrate de que sea 'User', no 'Usuario'
 
-class UsuarioAdmin(admin.ModelAdmin):
-    list_display = ('correo', 'nombre_usuario', 'nombre', 'apellido', 'activo', 'es_staff')
-
-admin.site.register(Usuario, UsuarioAdmin)
+@admin.register(User)
+class UserAdmin(admin.ModelAdmin):
+    list_display = ('user_id', 'name', 'surname', 'email', 'role')
+    search_fields = ('name', 'surname', 'email')
+    list_filter = ('role',)

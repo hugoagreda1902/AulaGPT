@@ -2,48 +2,52 @@ import os
 from pathlib import Path
 import environ
 
+# Inicializar environ y leer .env
 env = environ.Env()
 environ.Env.read_env()
 
-
 # Seguridad
-SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'default_secret_key')
-DEBUG = os.getenv('DEBUG', 'False') == 'True'
+SECRET_KEY = env('DJANGO_SECRET_KEY', default='fk5dd=8&!c(0on=y6hhhd6hftjq(i)krxv=c45f6tqj$t@uvet')
+DEBUG = env.bool('DEBUG', default=False)
 
 ALLOWED_HOSTS = ['aulagpt.net', 'www.aulagpt.net', '127.0.0.1']
 
+# Directorio base del proyecto
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 
-# Base de Datos
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
+# Base de datos
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': env('MYSQL_DATABASE', 'aulagpt_db'),
-        'USER': env('MYSQL_USER', 'root'),
-        'PASSWORD': env('MYSQL_PASSWORD', '1234'),
-        'HOST': env('MYSQL_HOST', '127.0.0.1'),
-        'PORT': env('MYSQL_PORT', '3306'),
+        'NAME': env('MYSQL_DATABASE', default='aulagpt_db'),
+        'USER': env('MYSQL_USER', default='root'),
+        'PASSWORD': env('MYSQL_PASSWORD', default='1234'),
+        'HOST': env('MYSQL_HOST', default='127.0.0.1'),
+        'PORT': env('MYSQL_PORT', default='3306'),
     }
 }
 
-# Configuración de URL
-ROOT_URLCONF = 'urls'  # Nombre de tu proyecto y archivo urls.py
+
+# Configuración de URL raíz
+ROOT_URLCONF = 'aulagpt_backend.urls'  
 
 # Autenticación
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
-AUTH_USER_MODEL = 'api.Usuario'
+AUTH_USER_MODEL = 'api.User'
 
-
-# Archivos estáticos y de medios
+# Archivos estáticos y media
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+# Middleware
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -52,35 +56,35 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware', # Middleware para CORS
+    'corsheaders.middleware.CorsMiddleware',  # Middleware para CORS
 ]
 
+# Apps instaladas
 INSTALLED_APPS = [
-    # Django apps que no creas tablas en la base de datos
-    'django.contrib.admin',  # Para administración (si la necesitas)
-    'django.contrib.auth',  # Si quieres usar autenticación
-    'django.contrib.contenttypes',  # Para gestionar tipos de contenido
-    'django.contrib.sessions',  # Si vas a usar sesiones (por ejemplo, autenticación)
-    'django.contrib.messages',  # Para manejo de mensajes
-    'django.contrib.staticfiles',  # Si vas a manejar archivos estáticos
-    'corsheaders',  # Para CORS, si lo necesitas
-    'api',  # Tu propia aplicación (cambia 'api' por el nombre de tu app)
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'corsheaders',
+    'api',  # Tu app principal
 ]
 
-
+# CORS
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    # Agrega otras URLs si es necesario
+    # Agrega otros orígenes si es necesario
 ]
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'  # Para evitar warnings en migraciones
+# Auto campo por defecto
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Templates
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            BASE_DIR / 'templates',  # Este es el directorio base donde están tus plantillas
-        ],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -93,7 +97,7 @@ TEMPLATES = [
     },
 ]
 
-
+# Localización
 TIME_ZONE = 'UTC'
 LANGUAGE_CODE = 'en-us'
 
