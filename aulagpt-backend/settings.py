@@ -1,12 +1,10 @@
 import os
 from pathlib import Path
 import environ
-from dotenv import load_dotenv
 
-# Lee el archivo .env
 env = environ.Env()
 environ.Env.read_env()
-load_dotenv()
+
 
 # Seguridad
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'default_secret_key')
@@ -20,11 +18,11 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('MYSQL_DATABASE', 'aulagpt_db'),
-        'USER': os.getenv('MYSQL_USER', 'root'),
-        'PASSWORD': os.getenv('MYSQL_PASSWORD', '1234'),
-        'HOST': os.getenv('MYSQL_HOST', '127.0.0.1'),
-        'PORT': os.getenv('MYSQL_PORT', '3306'),
+        'NAME': env('MYSQL_DATABASE', 'aulagpt_db'),
+        'USER': env('MYSQL_USER', 'root'),
+        'PASSWORD': env('MYSQL_PASSWORD', '1234'),
+        'HOST': env('MYSQL_HOST', '127.0.0.1'),
+        'PORT': env('MYSQL_PORT', '3306'),
     }
 }
 
