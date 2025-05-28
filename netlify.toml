@@ -1,0 +1,7 @@
+[build]
+  base    = "aula-gpt-frontend"
+  publish = "aula-gpt-frontend/build"
+  command = "npm run build"
+
+[dev]
+  framework = "react"

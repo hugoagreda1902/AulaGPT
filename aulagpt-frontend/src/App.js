@@ -1,14 +1,12 @@
 // src/App.js
 import React from 'react';
-import Usuarios from './components/Usuarios';  // Importa el componente Usuarios
 
-const App = () => {
+function App() {
   return (
     <div>
-      <h1>Bienvenido a AulaGPT</h1>
-      <Usuarios />  {/* Aquí se renderiza el componente Usuarios */}
+      <h1>Hola, AulaGPT Frontend funcionando!</h1>
     </div>
   );
-};
+}
 
 export default App;
