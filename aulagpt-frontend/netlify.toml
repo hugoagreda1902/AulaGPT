@@ -1,8 +1,8 @@
 [build]
-  base    = "."
-  command = "npm run build"
+  base = "aulagpt-frontend"
   publish = "build"
-  
+  command = "npm run build"
+
 
 [dev]
   framework = "react"
