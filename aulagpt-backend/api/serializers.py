@@ -1,11 +1,27 @@
 from rest_framework import serializers
 from .models import User, Class, UserClass, Documents, Tests, TestQuestion, TestAnswer, Activity
 
-# Serializador para el modelo User (usuarios)
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = '__all__'      # Serializa todos los campos del modelo User
+        fields = ['user_id', 'name', 'surname', 'email', 'role', 'firebase_uid']
+        extra_kwargs = {
+            'email': {'required': True},
+            'name': {'required': True},
+            'surname': {'required': True},
+            'role': {'required': True},
+        }
+
+    def validate_firebase_uid(self, value):
+        if User.objects.filter(firebase_uid=value).exists():
+            raise serializers.ValidationError("Usuario con ese firebase_uid ya existe")
+        return value
+
+    def create(self, validated_data):
+        # Aquí simplemente se crea el usuario en la base de datos
+        return User.objects.create(**validated_data)
+
+
 
 class ClassSerializer(serializers.ModelSerializer):
     class Meta:
