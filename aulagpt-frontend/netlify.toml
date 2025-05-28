@@ -1,6 +1,6 @@
 [build]
-  base    = "aula-gpt-frontend"
-  publish = "aula-gpt-frontend/build"
+  base    = "aulagpt-frontend"
+  publish = "aulagpt-frontend/build"
   command = "npm run build"
 
 [dev]
