@@ -1,6 +1,6 @@
 // src/firebase.js
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -14,8 +14,46 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-
-const auth = getAuth(app);
+export const auth = getAuth(app);
 export const db = getFirestore(app);
 
-export { auth };
+// En tu componente Register.js o similar
+import React, { useState } from 'react';
+import { auth, db } from './firebase';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
+
+function Register() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Guardar info del usuario en Firestore en colección "users"
+      await setDoc(doc(db, 'users', user.uid), {
+        email: user.email,
+        createdAt: new Date(),
+        // otros datos que quieras guardar
+      });
+
+      alert('Usuario creado y datos guardados');
+    } catch (error) {
+      console.error('Error creando usuario:', error.message);
+      alert(error.message);
+    }
+  };
+
+  return (
+    <form onSubmit={handleRegister}>
+      <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} required />
+      <input type="password" placeholder="Contraseña" value={password} onChange={e => setPassword(e.target.value)} required />
+      <button type="submit">Crear cuenta</button>
+    </form>
+  );
+}
+
+export default Register;
