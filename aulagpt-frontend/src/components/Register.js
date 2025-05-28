@@ -1,27 +1,33 @@
-// src/components/Login.js
+// src/components/Register.js
 import React, { useState } from "react";
-import { auth } from "../firebase";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth, db } from "../firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 
-export default function Login({ onLogin }) {
+export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
 
-  const handleLogin = async (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
     setError(null);
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      onLogin();  // avisar a App que el usuario está logueado
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      // Guardar usuario en Firestore
+      await setDoc(doc(db, "users", userCredential.user.uid), {
+        email: userCredential.user.email,
+        createdAt: new Date()
+      });
+      alert("Usuario registrado correctamente");
     } catch (err) {
       setError(err.message);
     }
   };
 
   return (
-    <form onSubmit={handleLogin}>
-      <h2>Iniciar sesión</h2>
+    <form onSubmit={handleRegister}>
+      <h2>Registro</h2>
       <input
         type="email"
         placeholder="Correo electrónico"
@@ -36,7 +42,7 @@ export default function Login({ onLogin }) {
         onChange={e => setPassword(e.target.value)}
         required
       />
-      <button type="submit">Entrar</button>
+      <button type="submit">Crear cuenta</button>
       {error && <p style={{ color: "red" }}>{error}</p>}
     </form>
   );
