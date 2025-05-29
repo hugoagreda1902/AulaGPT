@@ -37,7 +37,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     surname = models.CharField(max_length=100)                      # Apellidos
     email = models.EmailField(unique=True)                          # Email único para login
     role = models.CharField(max_length=7, choices=ROLE_CHOICES)     # Rol del usuario
-    firebase_uid = models.CharField(max_length=128, unique=True, null=True, blank=True)
 
     is_active = models.BooleanField(default=True)                   # Indica si la cuenta está activa
     is_staff = models.BooleanField(default=False)                   # Permisos administrativos para Django admin
