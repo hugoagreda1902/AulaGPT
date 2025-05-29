@@ -1,1 +1,1 @@
-web: gunicorn aula_api.wsgi --bind 0.0.0.0:$PORT
+web: gunicorn aula_gpt_backend.wsgi --log-file -
