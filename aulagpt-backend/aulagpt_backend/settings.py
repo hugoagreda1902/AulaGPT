@@ -4,20 +4,17 @@ import environ
 
 # Inicializar environ y leer .env
 env = environ.Env()
-environ.Env.read_env()
-
-# Seguridad
-SECRET_KEY = env('DJANGO_SECRET_KEY', default='fk5dd=8&!c(0on=y6hhhd6hftjq(i)krxv=c45f6tqj$t@uvet')
-DEBUG = env.bool('DEBUG', default=False)
-
-ALLOWED_HOSTS = ['aulagpt.net', 'www.aulagpt.net', '127.0.0.1']
-
-# Directorio base del proyecto
+# Carga el .env ubicado en el BASE_DIR
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
-
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
-# Base de datos
+# Seguridad
+SECRET_KEY = env('DJANGO_SECRET_KEY')
+DEBUG = env.bool('DEBUG', default=False)
+
+# Ajustar ALLOWED_HOSTS para producción y Render
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['localhost', '127.0.0.1', 'aulagpt.net', 'www.aulagpt.net'])
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -29,15 +26,13 @@ DATABASES = {
     }
 }
 
-
-# Configuración de URL raíz
-ROOT_URLCONF = 'aulagpt_backend.urls'  
+# URLs y directorios base
+ROOT_URLCONF = 'aulagpt_backend.urls'
 
 # Autenticación
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
-
 AUTH_USER_MODEL = 'api.User'
 
 # Archivos estáticos y media
@@ -50,6 +45,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # Middleware
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Whitenoise para servir estáticos en producción
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -64,18 +60,17 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
+    'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.sessions',
     'corsheaders',
     'api',
 ]
 
-# CORS
-CORS_ALLOWED_ORIGINS = [
+# CORS (ajusta para tu frontend)
+CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=[
     "http://localhost:3000",
-    # Agrega otros orígenes si es necesario
-]
+])
 
 # Auto campo por defecto
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -104,3 +99,14 @@ LANGUAGE_CODE = 'en-us'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
+
+# Seguridad extra para producción
+if not DEBUG:
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    X_FRAME_OPTIONS = 'DENY'
+
+# Whitenoise - configuración para servir estáticos en producción
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
