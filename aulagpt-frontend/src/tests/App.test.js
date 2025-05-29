@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import App from './App';
+import App from '../App';
 
 test('sends user data on form submit', async () => {
   render(<App />);
