@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from '../firebase'; // ajusta ruta a tu configuración Firebase
+
 
 function Register() {
   const [email, setEmail] = useState('');
