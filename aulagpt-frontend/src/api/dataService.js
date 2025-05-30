@@ -3,7 +3,7 @@ import API from './axiosConfig';
 // Añadir un usuario
 export const addUser = async (user) => {
   try {
-    const response = await API.post('/users', user); 
+    const response = await API.post('/users/', user); 
     return response.data;  // Lo que devuelva tu backend (por ejemplo, ID o usuario creado)
   } catch (error) {
     console.error("Error adding user: ", error);
