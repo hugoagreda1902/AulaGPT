@@ -23,12 +23,8 @@ DATABASES = {
         'NAME': env('MYSQL_DATABASE', default='aulagpt_db'),
         'USER': env('MYSQL_USER', default='admin'),
         'PASSWORD': env('MYSQL_PASSWORD', default='RmHLRrJb19022004!'),
-        'HOST': env('MYSQL_HOST', default='aulagpt.c3c4gg2w4fu0.eu-north-1.rds.amazonaws.com'),
+        'HOST': env('MYSQL_HOST', default='auladb.c3c4gg2w4fu0.eu-north-1.rds.amazonaws.com'),
         'PORT': env('MYSQL_PORT', default='3306'),
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-            'charset': 'utf8mb4',
-        },
     }
 }
 
