@@ -74,7 +74,7 @@ export default function Register() {
         <input
           type="password"
           name="password"
-          value={user.password}
+          value={user.password} 
           onChange={handleChange}
           required
         />
