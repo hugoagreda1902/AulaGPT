@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
-import { addUser } from '../api/dataService'; // ajusta la ruta si hace falta
+import { addUser } from '../api/dataService';
 
 export default function Register() {
-  const [user, setUser] = useState({ name: '', email: '', password: '' });
+  const [user, setUser] = useState({
+    name: '',
+    surname: '',
+    email: '',
+    password: '',
+    role: 'student' // puedes poner 'student' o 'teacher' por defecto
+  });
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState(null);
 
@@ -42,6 +48,17 @@ export default function Register() {
       </label>
 
       <label>
+        Apellido:
+        <input
+          type="text"
+          name="surname"
+          value={user.surname}
+          onChange={handleChange}
+          required
+        />
+      </label>
+
+      <label>
         Email:
         <input
           type="email"
@@ -61,6 +78,14 @@ export default function Register() {
           onChange={handleChange}
           required
         />
+      </label>
+
+      <label>
+        Rol:
+        <select name="role" value={user.role} onChange={handleChange} required>
+          <option value="student">Estudiante</option>
+          <option value="teacher">Profesor</option>
+        </select>
       </label>
 
       {error && <p style={{ color: 'red' }}>{error}</p>}

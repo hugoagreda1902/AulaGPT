@@ -44,7 +44,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     # Campo que identifica al usuario para login (email en este caso)
     USERNAME_FIELD = 'email'
     # Campos obligatorios para crear un usuario
-    REQUIRED_FIELDS = ['name', 'surname', 'role', 'email']
+    REQUIRED_FIELDS = ['name', 'surname', 'role',]
 
     # Asigna el manager personalizado para crear usuarios
     objects = UserManager()
