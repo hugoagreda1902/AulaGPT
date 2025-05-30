@@ -12,11 +12,6 @@ class UserSerializer(serializers.ModelSerializer):
             'role': {'required': True},
         }
 
-    def validate_firebase_uid(self, value):
-        if User.objects.filter(firebase_uid=value).exists():
-            raise serializers.ValidationError("Usuario con ese firebase_uid ya existe")
-        return value
-
     def create(self, validated_data):
         # Aquí simplemente se crea el usuario en la base de datos
         return User.objects.create(**validated_data)
