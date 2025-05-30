@@ -1,30 +1,26 @@
 import os
 from pathlib import Path
-import environ
 
-# Inicializar environ y leer .env
-env = environ.Env(
-    DEBUG=(bool, False)
-)
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # Seguridad
-SECRET_KEY = env('DJANGO_SECRET_KEY')
-DEBUG = env.bool('DEBUG', default=False)
+SECRET_KEY = 'fk5dd=8&!c(0on=y6hhhd6hftjq(i)krxv=c45f6tqj$t@uvet'  
 
-# Ajustar ALLOWED_HOSTS para producción y desarrollo
-ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['*'])
+# DEBUG activo para desarrollo. Cambia a False para producción.
+DEBUG = True
 
-# Database
+# Hosts permitidos (en producción pon aquí los dominios autorizados)
+ALLOWED_HOSTS = ['aulagpt.net', 'localhost', '127.0.0.1']  
+
+# Configuración base de datos MySQL, sin usar entorno ni env()
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': env('MYSQL_DATABASE', default='aulagpt_db'),
-        'USER': env('MYSQL_USER', default='admin'),
-        'PASSWORD': env('MYSQL_PASSWORD', default='RmHLRrJb19022004!'),
-        'HOST': env('MYSQL_HOST', default='auladb.c3c4gg2w4fu0.eu-north-1.rds.amazonaws.com'),
-        'PORT': env('MYSQL_PORT', default='3306'),
+        'NAME': 'aulagpt_db',           # Cambia al nombre real de tu base de datos
+        'USER': 'admin',                # Cambia por tu usuario MySQL
+        'PASSWORD': 'RmHLRrJb19022004!',  # Cambia por tu contraseña MySQL
+        'HOST': 'auladb.c3c4gg2w4fu0.eu-north-1.rds.amazonaws.com',  # Host de tu DB en AWS
+        'PORT': '3306',
     }
 }
 
@@ -35,7 +31,7 @@ ROOT_URLCONF = 'aulagpt_backend.urls'
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
-AUTH_USER_MODEL = 'api.User'
+AUTH_USER_MODEL = 'api.User'  # Tu modelo personalizado de usuario
 
 # Archivos estáticos y media
 STATIC_URL = '/static/'
@@ -47,8 +43,8 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # Middleware
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # Whitenoise para servir estáticos en producción
-    'corsheaders.middleware.CorsMiddleware',       # corsheaders debe ir antes de CommonMiddleware
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Para servir estáticos en producción
+    'corsheaders.middleware.CorsMiddleware',       # CORS debe ir antes de CommonMiddleware
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -65,12 +61,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'corsheaders',
     'api',  # Tu app principal
 ]
 
-# CORS (ajusta para tu frontend)
-CORS_ALLOWED_ORIGINS = ["https://aulagpt.net",]
+# CORS (modifica según tu frontend)
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # Si pruebas frontend local
+    "https://aulagpt.net",    # Producción
+]
 
 # Auto campo por defecto
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -93,8 +93,8 @@ TEMPLATES = [
 ]
 
 # Localización
-TIME_ZONE = 'Europe/Madrid'  # Cambiado a zona horaria de España
-LANGUAGE_CODE = 'es-es'      # Idioma español
+TIME_ZONE = 'Europe/Madrid'
+LANGUAGE_CODE = 'es-es'
 
 USE_I18N = True
 USE_L10N = True
@@ -108,5 +108,5 @@ if not DEBUG:
     CSRF_COOKIE_SECURE = True
     X_FRAME_OPTIONS = 'DENY'
 
-# Whitenoise - configuración para servir estáticos en producción
+# Whitenoise - para servir estáticos en producción
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

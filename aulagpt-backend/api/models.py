@@ -44,7 +44,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     # Campo que identifica al usuario para login (email en este caso)
     USERNAME_FIELD = 'email'
     # Campos obligatorios para crear un usuario
-    REQUIRED_FIELDS = ['name', 'surname', 'role']
+    REQUIRED_FIELDS = ['name', 'surname', 'role', 'email']
 
     # Asigna el manager personalizado para crear usuarios
     objects = UserManager()
@@ -63,7 +63,7 @@ class UserClass (models.Model):
         unique_together = ('user_id', 'class_id')                     
     
     def __str__(self):
-        return f"{self.user} in {self.class_id}"
+        return f"{self.user_id} in {self.class_id}"
     
 # Modelo para clases o grupos de usuarios    
 class Class (models.Model):
