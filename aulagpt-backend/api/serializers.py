@@ -4,7 +4,7 @@ from .models import User, Class, UserClass, Documents, Tests, TestQuestion, Test
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['user_id', 'name', 'surname', 'email', 'role', 'firebase_uid']
+        fields = ['user_id', 'name', 'surname', 'email', 'role',]
         extra_kwargs = {
             'email': {'required': True},
             'name': {'required': True},
