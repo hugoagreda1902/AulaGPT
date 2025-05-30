@@ -70,9 +70,7 @@ INSTALLED_APPS = [
 ]
 
 # CORS (ajusta para tu frontend)
-CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=[
-    "https://aulagpt.net",
-])
+CORS_ALLOWED_ORIGINS = ["https://aulagpt.net",]
 
 # Auto campo por defecto
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

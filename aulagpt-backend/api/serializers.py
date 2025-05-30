@@ -16,8 +16,6 @@ class UserSerializer(serializers.ModelSerializer):
         # Aquí simplemente se crea el usuario en la base de datos
         return User.objects.create(**validated_data)
 
-
-
 class ClassSerializer(serializers.ModelSerializer):
     class Meta:
         model = Class
