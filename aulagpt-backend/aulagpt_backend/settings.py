@@ -3,8 +3,9 @@ from pathlib import Path
 import environ
 
 # Inicializar environ y leer .env
-env = environ.Env()
-# Carga el .env ubicado en el BASE_DIR
+env = environ.Env(
+    DEBUG=(bool, False)
+)
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
@@ -12,17 +13,22 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = env('DJANGO_SECRET_KEY')
 DEBUG = env.bool('DEBUG', default=False)
 
-# Ajustar ALLOWED_HOSTS para producción y Render
-ALLOWED_HOSTS = ['*']
+# Ajustar ALLOWED_HOSTS para producción y desarrollo
+ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['*'])
 
+# Database
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': env('MYSQL_DATABASE', default='aulagpt_db'),
-        'USER': env('MYSQL_USER', default='root'),
-        'PASSWORD': env('MYSQL_PASSWORD', default='1234'),
-        'HOST': env('MYSQL_HOST', default='127.0.0.1'),
+        'USER': env('MYSQL_USER', default='admin'),
+        'PASSWORD': env('MYSQL_PASSWORD', default='RmHLRrJb19022004!'),
+        'HOST': env('MYSQL_HOST', default='aulagpt.c3c4gg2w4fu0.eu-north-1.rds.amazonaws.com'),
         'PORT': env('MYSQL_PORT', default='3306'),
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            'charset': 'utf8mb4',
+        },
     }
 }
 
@@ -46,13 +52,13 @@ MEDIA_ROOT = BASE_DIR / 'media'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',  # Whitenoise para servir estáticos en producción
+    'corsheaders.middleware.CorsMiddleware',       # corsheaders debe ir antes de CommonMiddleware
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
 ]
 
 # Apps instaladas
@@ -64,7 +70,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
-    'api',
+    'api',  # Tu app principal
 ]
 
 # CORS (ajusta para tu frontend)
@@ -93,8 +99,8 @@ TEMPLATES = [
 ]
 
 # Localización
-TIME_ZONE = 'UTC'
-LANGUAGE_CODE = 'en-us'
+TIME_ZONE = 'Europe/Madrid'  # Cambiado a zona horaria de España
+LANGUAGE_CODE = 'es-es'      # Idioma español
 
 USE_I18N = True
 USE_L10N = True
