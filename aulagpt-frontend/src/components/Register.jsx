@@ -1,14 +1,23 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';  // Para redirigir después
+import { addUser } from '../api/dataService';    // Ajusta la ruta si hace falta
 
 const Register = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log({ name, email, password });
-    // Aquí podrías llamar a addUser() para registrar al usuario
+
+    try {
+      await addUser({ name, email, password });  // Guardamos en la base de datos
+      navigate('/thank-you');  // Redirigimos a la página de agradecimiento
+    } catch (error) {
+      console.error('Error al registrar usuario:', error);
+      alert('Error al registrar usuario. Intenta de nuevo.');
+    }
   };
 
   return (
