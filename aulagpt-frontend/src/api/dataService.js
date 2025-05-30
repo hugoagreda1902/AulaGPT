@@ -1,26 +1,23 @@
-import { db } from '../firebase';  // Importa la instancia de Firebase
+import API from './axiosConfig';
 
+// Añadir un usuario
 export const addUser = async (user) => {
   try {
-    const docRef = await db.collection('users').add({
-      name: user.name,
-      email: user.email,
-      password: user.password,  // Asegúrate de manejar contraseñas de manera segura
-    });
-    console.log("User added with ID: ", docRef.id);
-    return docRef.id;
+    const response = await API.post('/users', user); 
+    return response.data;  // Lo que devuelva tu backend (por ejemplo, ID o usuario creado)
   } catch (error) {
     console.error("Error adding user: ", error);
+    throw error; // Para manejarlo donde llames la función
   }
 };
 
-// Esta función obtiene los usuarios de la base de datos (para pruebas)
+// Obtener usuarios
 export const getUsers = async () => {
   try {
-    const querySnapshot = await db.collection('users').get();
-    const users = querySnapshot.docs.map(doc => doc.data());
-    return users;
+    const response = await API.get('/users');
+    return response.data;  // Lista de usuarios que devuelve el backend
   } catch (error) {
     console.error("Error getting users: ", error);
+    throw error;
   }
 };
