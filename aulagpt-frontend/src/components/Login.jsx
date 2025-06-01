@@ -25,8 +25,7 @@ function Login() {
         const data = await response.json();
         console.log("Login exitoso:", data);
 
-        // Aquí podrías guardar el token o redirigir al dashboard
-        // localStorage.setItem("token", data.token);
+      
       } else if (response.status === 401) {
         setError("Contraseña incorrecta.");
       } else if (response.status === 404) {
