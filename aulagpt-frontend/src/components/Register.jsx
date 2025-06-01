@@ -20,30 +20,45 @@ function Register() {
     });
   };
 
-  // Enviar el formulario
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setSuccess(false);
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  setError("");
+  setSuccess(false);
 
-    try {
-      const res = await fetch("https://aulagpt.onrender.com/api/users/register/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+  console.log("Enviando formulario:", formData);
 
-      if (res.ok) {
-        setSuccess(true);
-        setFormData({ name: "", surname: "", email: "", password: "", role: "student" });
+  try {
+    const res = await fetch("https://aulagpt.onrender.com/api/users/register/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    });
+
+    console.log("Respuesta recibida:", res);
+
+    const data = await res.json();
+    console.log("Datos JSON recibidos:", data);
+
+    if (res.ok) {
+      setSuccess(true);
+      setFormData({ name: "", surname: "", email: "", password: "", role: "student" });
+    } else {
+      if (data.detail) {
+        setError(data.detail);
+      } else if (data.email) {
+        setError(data.email);
+      } else if (data.role) {
+        setError(data.role.join(", "));
       } else {
-        const data = await res.json();
-        setError(data.email || "Error en el registro");
+        setError("Error en el registro");
       }
-    } catch (error) {
-      setError("Error de conexión al servidor");
     }
-  };
+  } catch (error) {
+    console.error("Error al conectar con el servidor:", error);
+    setError("Error de conexión al servidor");
+  }
+};
+
 
   return (
     <div className="register-container">
