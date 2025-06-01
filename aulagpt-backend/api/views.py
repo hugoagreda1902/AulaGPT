@@ -1,7 +1,6 @@
-from rest_framework import generics
+from rest_framework import generics, viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework import viewsets, status
 from .models import User, Class, UserClass, Documents, Tests, TestQuestion, TestAnswer, Activity
 from .serializers import (
     UserSerializer, ClassSerializer, UserClassSerializer,
@@ -9,24 +8,26 @@ from .serializers import (
     TestAnswerSerializer, ActivitySerializer
 )
 
-@action(detail=False, methods=['post'], url_path='register')
-def register_user(self, request):
-    email = request.data.get('email')
+# ✅ ViewSet personalizado para el registro de usuarios
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
-    # Verificar si el email ya está registrado
-    if User.objects.filter(email=email).exists():
-        return Response({'detail': 'Este email ya está registrado.'}, status=status.HTTP_409_CONFLICT)
+    @action(detail=False, methods=['post'], url_path='register')
+    def register(self, request):
+        email = request.data.get('email')
 
-    # Registrar al usuario si no hay duplicado
-    serializer = self.get_serializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        if User.objects.filter(email=email).exists():
+            return Response({'email': 'Este email ya está registrado.'}, status=status.HTTP_409_CONFLICT)
 
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# ViewSets para el resto de modelos
+# ✅ ViewSets para el resto de modelos
 class ClassViewSet(viewsets.ModelViewSet):
     queryset = Class.objects.all()
     serializer_class = ClassSerializer

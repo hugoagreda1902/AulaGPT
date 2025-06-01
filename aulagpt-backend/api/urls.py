@@ -20,6 +20,4 @@ router.register(r'testanswers', TestAnswerViewSet)
 router.register(r'activities', ActivityViewSet)
 
 # Incluir todas las rutas generadas por el router en la URL raíz de esta app
-urlpatterns = [
-    path('', include(router.urls)),
-]
+urlpatterns = router.urls
