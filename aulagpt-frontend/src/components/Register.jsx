@@ -34,30 +34,22 @@ function Register() {
       body: JSON.stringify(formData),
     });
 
-    console.log("Respuesta recibida:", res);
-
-    const data = await res.json();
-    console.log("Datos JSON recibidos:", data);
+    console.log("Respuesta status:", res.status);
 
     if (res.ok) {
       setSuccess(true);
       setFormData({ name: "", surname: "", email: "", password: "", role: "student" });
     } else {
-      if (data.detail) {
-        setError(data.detail);
-      } else if (data.email) {
-        setError(data.email);
-      } else if (data.role) {
-        setError(data.role.join(", "));
-      } else {
-        setError("Error en el registro");
-      }
+      const data = await res.json();
+      console.log("Respuesta error JSON:", data);
+      setError(data.email || "Error en el registro");
     }
   } catch (error) {
-    console.error("Error al conectar con el servidor:", error);
+    console.error("Error en fetch:", error);
     setError("Error de conexión al servidor");
   }
 };
+
 
 
   return (
