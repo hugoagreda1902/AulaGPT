@@ -23,9 +23,6 @@ class UserViewSet(viewsets.ModelViewSet):
         if User.objects.filter(email=email).exists():
             return Response({'detail': 'Este email ya está registrado.'}, status=status.HTTP_409_CONFLICT)
 
-        # Verificar si el nombre de usuario ya está en uso
-        if User.objects.filter(username=username).exists():
-            return Response({'detail': 'Este nombre de usuario ya está en uso.'}, status=status.HTTP_409_CONFLICT)
 
         # Si no hay duplicados, registrar al usuario
         serializer = self.get_serializer(data=request.data)

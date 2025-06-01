@@ -10,7 +10,8 @@ SECRET_KEY = 'fk5dd=8&!c(0on=y6hhhd6hftjq(i)krxv=c45f6tqj$t@uvet'
 DEBUG = True
 
 # Hosts permitidos (en producción pon aquí los dominios autorizados)
-ALLOWED_HOSTS = ['aulagpt.onrender.com', 'localhost', '127.0.0.1']  
+ALLOWED_HOSTS = ['aulagpt.onrender.com', 'aulagpt.net', 'localhost', '127.0.0.1']
+
 
 # Configuración base de datos MySQL, sin usar entorno ni env()
 DATABASES = {
@@ -70,6 +71,7 @@ INSTALLED_APPS = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # Si pruebas frontend local
     "https://aulagpt.net",    # Producción
+    "http://aulagpt.net",
 ]
 
 # Auto campo por defecto
