@@ -10,7 +10,7 @@ from .views import (
 router = DefaultRouter()
 
 # Registramos cada ViewSet con un prefijo en la URL
-router.register(r'users', UserViewSet)                       # Rutas para gestionar usuarios
+router.register(r'users', UserViewSet, basename='user')                       # Rutas para gestionar usuarios
 router.register(r'classes', ClassViewSet)
 router.register(r'userclasses', UserClassViewSet)
 router.register(r'documents', DocumentsViewSet)
