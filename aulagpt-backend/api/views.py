@@ -1,3 +1,4 @@
+import hashlib
 from rest_framework import generics, viewsets, status
 from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
@@ -8,15 +9,16 @@ from .serializers import (
     TestAnswerSerializer, ActivitySerializer
 )
 
-# ✅ Vista para login (verifica email y contraseña)
 @api_view(['POST'])
 def login_user(request):
     email = request.data.get('email')
     password = request.data.get('password')
 
+    hashed_password = hashlib.sha256(password.encode('utf-8')).hexdigest()
+    
     try:
         user = User.objects.get(email=email)
-        if user.password == password:
+        if user.password == hashed_password:
             return Response({"message": "Login exitoso", "user_id": user.id})
         else:
             return Response({"error": "Contraseña incorrecta"}, status=status.HTTP_401_UNAUTHORIZED)
