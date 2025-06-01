@@ -24,6 +24,7 @@ def login_user(request):
         return Response({"error": "Usuario no encontrado"}, status=status.HTTP_404_NOT_FOUND)
 
 
+
 # ✅ ViewSet para registrar usuarios
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()

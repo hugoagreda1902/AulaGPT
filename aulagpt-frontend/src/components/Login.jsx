@@ -1,67 +1,60 @@
-import React, { useState } from "react";
+// Login.jsx
+import { useState } from "react";
 
 function Login() {
-  const [formData, setFormData] = useState({ email: "", password: "" });
-  const [error, setError] = useState("");
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
+    setErrorMsg("");
 
     try {
-      const response = await fetch("https://aulagpt.onrender.com/api/users/login/", {
+      const response = await fetch("https://aulagpt.onrender.com/api/login/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ email, password }),
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Login exitoso:", data);
+      const data = await response.json();
 
-      
-      } else if (response.status === 401) {
-        setError("Contraseña incorrecta.");
-      } else if (response.status === 404) {
-        setError("Usuario no encontrado.");
+      if (response.ok) {
+        alert("Login correcto");
+        console.log("Datos usuario:", data);
+        // Aquí puedes guardar datos en localStorage o redirigir al dashboard
       } else {
-        setError("Error al iniciar sesión.");
+        setErrorMsg(data.error || "Error al iniciar sesión");
       }
     } catch (err) {
-      console.error("Error de red:", err);
-      setError("No se pudo conectar con el servidor.");
+      console.error("Error en login:", err);
+      setErrorMsg("Error de conexión con el servidor");
     }
   };
 
   return (
     <div>
       <h2>Iniciar sesión</h2>
-      {error && <p style={{ color: "red" }}>{error}</p>}
       <form onSubmit={handleSubmit}>
         <input
           type="email"
-          name="email"
-          placeholder="Correo"
-          value={formData.email}
-          onChange={handleChange}
+          placeholder="Correo electrónico"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           required
-        />
+        /><br />
         <input
           type="password"
-          name="password"
           placeholder="Contraseña"
-          value={formData.password}
-          onChange={handleChange}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           required
-        />
+        /><br />
         <button type="submit">Entrar</button>
       </form>
+      {errorMsg && <p style={{ color: "red" }}>{errorMsg}</p>}
     </div>
   );
 }

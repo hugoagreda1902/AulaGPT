@@ -21,5 +21,5 @@ router.register(r'activities', ActivityViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('users/login/', login_user),  
+    path('login/', login_user),  
 ]
