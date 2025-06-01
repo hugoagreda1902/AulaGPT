@@ -17,7 +17,6 @@ class UserViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['post'], url_path='register')
     def register_user(self, request):
         email = request.data.get('email')
-        username = request.data.get('username')
 
         # Verificar si el email ya está registrado
         if User.objects.filter(email=email).exists():
