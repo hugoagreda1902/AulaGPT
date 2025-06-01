@@ -1,96 +1,87 @@
-import React, { useState } from 'react';
-import { addUser } from '../api/dataService';
+import React, { useState } from "react";
+import axios from "axios";
 
-export default function Register() {
-  const [user, setUser] = useState({
-    name: '',
-    surname: '',
-    email: '',
-    password: '',
-    role: 'student' // puedes poner 'student' o 'teacher' por defecto
-  });
-  const [submitted, setSubmitted] = useState(false);
-  const [error, setError] = useState(null);
+function Register() {
+  const [form, setForm] = useState({ username: "", email: "", password: "", role: "student" });
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
-    setUser({ ...user, [e.target.name]: e.target.value });
+    setForm({ ...form, [e.target.name]: e.target.value });
+    setError(""); // Borra errores al escribir
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
     try {
-      await addUser(user);
-      setSubmitted(true);
+      const res = await axios.post("https://tu-backend.com/api/register", form);
+      // Redirigir a página de gracias si se registra bien
+      window.location.href = "/thank-you";
     } catch (err) {
-      setError('Error al registrar usuario. Inténtalo de nuevo.');
-      console.error(err);
+      if (err.response && err.response.status === 409) {
+        // 409 Conflict: email ya usado
+        setError("Este email ya está registrado.");
+      } else {
+        setError("Hubo un error al registrar.");
+      }
     }
   };
 
-  if (submitted) {
-    return <h2>¡Gracias por registrarte!</h2>;
-  }
-
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Registro de usuario</h2>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-6">
+      <form onSubmit={handleSubmit} className="bg-white p-8 rounded shadow-md w-full max-w-md">
+        <h2 className="text-2xl mb-6 font-bold">Registrarse en AulaGPT</h2>
 
-      <label>
-        Nombre:
+        {error && <p className="text-red-600 mb-4">{error}</p>}
+
         <input
           type="text"
-          name="name"
-          value={user.name}
+          name="username"
+          placeholder="Nombre de usuario"
+          value={form.username}
           onChange={handleChange}
+          className="w-full mb-4 p-2 border rounded"
           required
         />
-      </label>
 
-      <label>
-        Apellido:
-        <input
-          type="text"
-          name="surname"
-          value={user.surname}
-          onChange={handleChange}
-          required
-        />
-      </label>
-
-      <label>
-        Email:
         <input
           type="email"
           name="email"
-          value={user.email}
+          placeholder="Correo electrónico"
+          value={form.email}
           onChange={handleChange}
+          className="w-full mb-4 p-2 border rounded"
           required
         />
-      </label>
 
-      <label>
-        Contraseña:
         <input
           type="password"
           name="password"
-          value={user.password} 
+          placeholder="Contraseña"
+          value={form.password}
           onChange={handleChange}
+          className="w-full mb-4 p-2 border rounded"
           required
         />
-      </label>
 
-      <label>
-        Rol:
-        <select name="role" value={user.role} onChange={handleChange} required>
-          <option value="student">Estudiante</option>
+        <select
+          name="role"
+          value={form.role}
+          onChange={handleChange}
+          className="w-full mb-6 p-2 border rounded"
+        >
+          <option value="student">Alumno</option>
           <option value="teacher">Profesor</option>
         </select>
-      </label>
 
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-
-      <button type="submit">Registrar</button>
-    </form>
+        <button
+          type="submit"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white p-2 rounded"
+        >
+          Registrarse
+        </button>
+      </form>
+    </div>
   );
 }
+
+export default Register;
