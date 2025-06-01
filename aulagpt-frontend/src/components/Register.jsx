@@ -1,84 +1,94 @@
 import React, { useState } from "react";
-import axios from "axios";
 
 function Register() {
-  const [form, setForm] = useState({ username: "", email: "", password: "", role: "student" });
-  const [error, setError] = useState("");
+  const [formData, setFormData] = useState({
+    name: "",
+    surname: "",
+    email: "",
+    password: "",
+    role: "student", // valor por defecto
+  });
 
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
+
+  // Maneja cambios en los inputs
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-    setError(""); // Borra errores al escribir
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
 
+  // Enviar el formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+    setSuccess(false);
+
     try {
-      const res = await axios.post("https://tu-backend.com/api/register", form);
-      // Redirigir a página de gracias si se registra bien
-      window.location.href = "/thank-you";
-    } catch (err) {
-      if (err.response && err.response.status === 409) {
-        // 409 Conflict: email ya usado
-        setError("Este email ya está registrado.");
+      const res = await fetch("http://tu-backend/api/users/register/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      if (res.ok) {
+        setSuccess(true);
+        setFormData({ name: "", surname: "", email: "", password: "", role: "student" });
       } else {
-        setError("Hubo un error al registrar.");
+        const data = await res.json();
+        setError(data.email || "Error en el registro");
       }
+    } catch (error) {
+      setError("Error de conexión al servidor");
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-6">
-      <form onSubmit={handleSubmit} className="bg-white p-8 rounded shadow-md w-full max-w-md">
-        <h2 className="text-2xl mb-6 font-bold">Registrarse en AulaGPT</h2>
-
-        {error && <p className="text-red-600 mb-4">{error}</p>}
-
+    <div className="register-container">
+      <h2>Registro de usuario</h2>
+      {success && <p style={{ color: "green" }}>Usuario registrado con éxito!</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      <form onSubmit={handleSubmit}>
         <input
           type="text"
-          name="username"
-          placeholder="Nombre de usuario"
-          value={form.username}
+          name="name"
+          placeholder="Nombre"
+          value={formData.name}
           onChange={handleChange}
-          className="w-full mb-4 p-2 border rounded"
           required
         />
-
+        <input
+          type="text"
+          name="surname"
+          placeholder="Apellido"
+          value={formData.surname}
+          onChange={handleChange}
+          required
+        />
         <input
           type="email"
           name="email"
           placeholder="Correo electrónico"
-          value={form.email}
+          value={formData.email}
           onChange={handleChange}
-          className="w-full mb-4 p-2 border rounded"
           required
         />
-
         <input
           type="password"
           name="password"
           placeholder="Contraseña"
-          value={form.password}
+          value={formData.password}
           onChange={handleChange}
-          className="w-full mb-4 p-2 border rounded"
           required
+          minLength={6}
         />
-
-        <select
-          name="role"
-          value={form.role}
-          onChange={handleChange}
-          className="w-full mb-6 p-2 border rounded"
-        >
+        <select name="role" value={formData.role} onChange={handleChange} required>
           <option value="student">Alumno</option>
           <option value="teacher">Profesor</option>
         </select>
-
-        <button
-          type="submit"
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white p-2 rounded"
-        >
-          Registrarse
-        </button>
+        <button type="submit">Registrarse</button>
       </form>
     </div>
   );
