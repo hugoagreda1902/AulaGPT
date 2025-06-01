@@ -1,5 +1,5 @@
 from rest_framework import generics, viewsets, status
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
 from .models import User, Class, UserClass, Documents, Tests, TestQuestion, TestAnswer, Activity
 from .serializers import (
@@ -8,7 +8,23 @@ from .serializers import (
     TestAnswerSerializer, ActivitySerializer
 )
 
-# ✅ ViewSet personalizado para el registro de usuarios
+# ✅ Vista para login (verifica email y contraseña)
+@api_view(['POST'])
+def login_user(request):
+    email = request.data.get('email')
+    password = request.data.get('password')
+
+    try:
+        user = User.objects.get(email=email)
+        if user.password == password:
+            return Response({"message": "Login exitoso", "user_id": user.id})
+        else:
+            return Response({"error": "Contraseña incorrecta"}, status=status.HTTP_401_UNAUTHORIZED)
+    except User.DoesNotExist:
+        return Response({"error": "Usuario no encontrado"}, status=status.HTTP_404_NOT_FOUND)
+
+
+# ✅ ViewSet para registrar usuarios
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -26,6 +42,7 @@ class UserViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 # ✅ ViewSets para el resto de modelos
 class ClassViewSet(viewsets.ModelViewSet):

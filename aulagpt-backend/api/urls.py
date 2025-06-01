@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 from .views import (
     UserViewSet, ClassViewSet, UserClassViewSet,
     DocumentsViewSet, TestsViewSet, TestQuestionViewSet,
-    TestAnswerViewSet, ActivityViewSet
+    TestAnswerViewSet, ActivityViewSet, login_user
 )
 
 # Creamos un router por defecto de DRF para gestionar las rutas automáticamente
@@ -19,5 +19,7 @@ router.register(r'testquestions', TestQuestionViewSet)
 router.register(r'testanswers', TestAnswerViewSet)
 router.register(r'activities', ActivityViewSet)
 
-# Incluir todas las rutas generadas por el router en la URL raíz de esta app
-urlpatterns = router.urls
+urlpatterns = [
+    path('', include(router.urls)),
+    path('users/login/', login_user),  
+]
