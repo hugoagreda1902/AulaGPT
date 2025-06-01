@@ -24,7 +24,6 @@ function Login() {
       if (response.ok) {
         alert("Login correcto");
         console.log("Datos usuario:", data);
-        // Aquí puedes guardar datos en localStorage o redirigir al dashboard
       } else {
         setErrorMsg(data.error || "Error al iniciar sesión");
       }
