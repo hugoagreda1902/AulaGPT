@@ -67,12 +67,7 @@ INSTALLED_APPS = [
     'api',  # Tu app principal
 ]
 
-# CORS (modifica según tu frontend)
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # Si pruebas frontend local
-    "https://aulagpt.net",    # Producción
-    "http://aulagpt.net",
-]
+CORS_ALLOW_ALL_ORIGINS = True
 
 # Auto campo por defecto
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
