@@ -13,7 +13,7 @@ router = DefaultRouter()
 router.register(r'users', UserViewSet, basename='user')                       # Rutas para gestionar usuarios
 router.register(r'classes', ClassViewSet)
 router.register(r'userclasses', UserClassViewSet)
-router.register(r'documents', DocumentsViewSet)
+router.register(r'documents', DocumentsViewSet, basename='documents')
 router.register(r'tests', TestsViewSet)
 router.register(r'testquestions', TestQuestionViewSet)
 router.register(r'testanswers', TestAnswerViewSet)

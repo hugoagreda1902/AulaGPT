@@ -1,6 +1,5 @@
-import hashlib
-from rest_framework import generics, viewsets, status
-from rest_framework.decorators import action, api_view
+from rest_framework import viewsets, status, permissions
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from .models import User, Class, UserClass, Documents, Tests, TestQuestion, TestAnswer, Activity
 from .serializers import (
@@ -8,6 +7,7 @@ from .serializers import (
     DocumentsSerializer, TestsSerializer, TestQuestionSerializer,
     TestAnswerSerializer, ActivitySerializer
 )
+from .serializers import DocumentsSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -55,6 +55,10 @@ class ClassViewSet(viewsets.ModelViewSet):
 class UserClassViewSet(viewsets.ModelViewSet):
     queryset = UserClass.objects.all()
     serializer_class = UserClassSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save()
 
 class DocumentsViewSet(viewsets.ModelViewSet):
     queryset = Documents.objects.all()
