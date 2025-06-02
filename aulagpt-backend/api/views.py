@@ -14,16 +14,17 @@ def login_user(request):
     email = request.data.get('email')
     password = request.data.get('password')
 
-    hashed_password = hashlib.sha256(password.encode('utf-8')).hexdigest()
-    
+    # Buscar al usuario por email
     try:
         user = User.objects.get(email=email)
-        if user.password == hashed_password:
-            return Response({"message": "Login exitoso", "user_id": user.id})
-        else:
-            return Response({"error": "Contraseña incorrecta"}, status=status.HTTP_401_UNAUTHORIZED)
     except User.DoesNotExist:
         return Response({"error": "Usuario no encontrado"}, status=status.HTTP_404_NOT_FOUND)
+
+    # Verificar la contraseña con check_password
+    if user.check_password(password):
+        return Response({"message": "Login exitoso", "user_id": user.id})
+    else:
+        return Response({"error": "Contraseña incorrecta"}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 
