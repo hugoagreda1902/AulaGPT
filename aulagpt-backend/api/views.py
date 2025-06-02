@@ -8,6 +8,7 @@ from .serializers import (
     TestAnswerSerializer, ActivitySerializer
 )
 from .serializers import DocumentsSerializer
+from .google_drive.utils import subir_a_google_drive 
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -45,6 +46,35 @@ class UserViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+class DocumentsViewSet(viewsets.ModelViewSet):
+    queryset = Documents.objects.all()
+    serializer_class = DocumentsSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        serializer = DocumentsSerializer(data=request.data)
+        if serializer.is_valid():
+            uploaded_file = request.FILES.get('file')
+
+            if not uploaded_file:
+                return Response({'file': 'Archivo requerido.'}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Llamamos a la función para subir a Google Drive y obtener el link
+            drive_link = subir_a_google_drive(uploaded_file)
+
+            # Creamos el documento en la BD
+            document = Documents.objects.create(
+                drive_link=drive_link,
+                file_name=uploaded_file.name,
+                file_type=uploaded_file.content_type,
+                class_id=serializer.validated_data.get('class_id')
+            )
+
+            return Response(DocumentsSerializer(document).data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 # ✅ ViewSets para el resto de modelos
@@ -60,9 +90,6 @@ class UserClassViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save()
 
-class DocumentsViewSet(viewsets.ModelViewSet):
-    queryset = Documents.objects.all()
-    serializer_class = DocumentsSerializer
 
 class TestsViewSet(viewsets.ModelViewSet):
     queryset = Tests.objects.all()

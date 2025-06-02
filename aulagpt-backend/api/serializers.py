@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from .models import User, Class, UserClass, Documents, Tests, TestQuestion, TestAnswer, Activity
+from .google_drive.utils import create_drive_folder
+
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True, min_length=6)
@@ -26,21 +28,33 @@ class UserSerializer(serializers.ModelSerializer):
         user.set_password(password)  # Encriptar la contraseña
         user.save()
         return user
+    
 
+class DocumentsSerializer(serializers.ModelSerializer):
+    file = serializers.FileField(write_only=True)
 
+    class Meta:
+        model = Documents
+        fields = ['document_id', 'class_id', 'file_name', 'file_type', 'upload_date', 'drive_link', 'file']
+        read_only_fields = ['document_id', 'upload_date', 'drive_link', 'file_name', 'file_type']
+    
 class ClassSerializer(serializers.ModelSerializer):
     class Meta:
         model = Class
         fields = '__all__'
 
+    def create(self, validated_data):
+        folder_name = validated_data.get('name')
+        # Crear carpeta en Google Drive
+        folder_id = create_drive_folder (folder_name)
+        # Asignar el ID de la carpeta a validated_data
+        validated_data['google_drive_folder_id'] = folder_id
+        # Crear la instancia Class con el folder_id
+        return super().create(validated_data)
+
 class UserClassSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserClass
-        fields = '__all__'
-
-class DocumentsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Documents
         fields = '__all__'
 
 class TestsSerializer(serializers.ModelSerializer):

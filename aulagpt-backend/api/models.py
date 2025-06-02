@@ -66,13 +66,14 @@ class UserClass (models.Model):
         return f"{self.user_id} in {self.class_id}"
     
 # Modelo para clases o grupos de usuarios    
-class Class (models.Model):
-    class_id = models.AutoField(primary_key=True)                 # ID autoincremental como PK 
-    class_name = models.CharField(max_length=100)                 # Nombre descriptivo de la clase
-    acces_code = models.CharField(max_length=20, unique=True)     # Código para unirse a la clase (único)
+class Class(models.Model):
+    class_id = models.AutoField(primary_key=True)                 
+    class_name = models.CharField(max_length=100)                 
+    acces_code = models.CharField(max_length=20, unique=True)     
 
-    # Relación ManyToMany con usuarios, usando tabla intermedia UserClass
-    users = models.ManyToManyField(User, through=UserClass)       
+    users = models.ManyToManyField(User, through='UserClass')    
+
+    drive_folder_id = models.CharField(max_length=200, blank=True, null=True)  # ⬅️ nuevo campo
 
     def __str__(self):
         return self.class_name
