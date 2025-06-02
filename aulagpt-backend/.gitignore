@@ -24,3 +24,6 @@ Thumbs.db
 # Archivos de static y media (si los generas en producción)
 staticfiles/
 media/
+
+# Ignorar credenciales de Google Drive
+api/google_drive/credentials.json
