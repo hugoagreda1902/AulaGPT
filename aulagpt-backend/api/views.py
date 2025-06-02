@@ -22,14 +22,15 @@ class UserViewSet(viewsets.ModelViewSet):
 
         try:
             user = User.objects.get(email=email)
+            print(f"Usuario encontrado: {user}")  # o logging.info(...)
         except User.DoesNotExist:
             return Response({"error": "Usuario no encontrado"}, status=status.HTTP_404_NOT_FOUND)
 
         if user.check_password(password):
             return Response({"message": "Login exitoso", "user_id": user.user_id})
-)
         else:
             return Response({"error": "Contraseña incorrecta"}, status=status.HTTP_401_UNAUTHORIZED)
+
         
     @action(detail=False, methods=['post'], url_path='register')
     def register(self, request):
