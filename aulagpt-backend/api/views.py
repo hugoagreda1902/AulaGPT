@@ -26,7 +26,8 @@ class UserViewSet(viewsets.ModelViewSet):
             return Response({"error": "Usuario no encontrado"}, status=status.HTTP_404_NOT_FOUND)
 
         if user.check_password(password):
-            return Response({"message": "Login exitoso", "user_id": user.id})
+            return Response({"message": "Login exitoso", "user_id": user.user_id})
+)
         else:
             return Response({"error": "Contraseña incorrecta"}, status=status.HTTP_401_UNAUTHORIZED)
         
