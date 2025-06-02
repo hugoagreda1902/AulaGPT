@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 from .views import (
     UserViewSet, ClassViewSet, UserClassViewSet,
     DocumentsViewSet, TestsViewSet, TestQuestionViewSet,
-    TestAnswerViewSet, ActivityViewSet, login_user
+    TestAnswerViewSet, ActivityViewSet,
 )
 
 # Creamos un router por defecto de DRF para gestionar las rutas automáticamente
@@ -20,6 +20,5 @@ router.register(r'testanswers', TestAnswerViewSet)
 router.register(r'activities', ActivityViewSet)
 
 urlpatterns = [
-    path('', include(router.urls)),
-    path('login/', login_user),  
+    path('', include(router.urls)), 
 ]

@@ -9,30 +9,27 @@ from .serializers import (
     TestAnswerSerializer, ActivitySerializer
 )
 
-@api_view(['POST'])
-def login_user(request):
-    email = request.data.get('email')
-    password = request.data.get('password')
 
-    # Buscar al usuario por email
-    try:
-        user = User.objects.get(email=email)
-    except User.DoesNotExist:
-        return Response({"error": "Usuario no encontrado"}, status=status.HTTP_404_NOT_FOUND)
-
-    # Verificar la contraseña con check_password
-    if user.check_password(password):
-        return Response({"message": "Login exitoso", "user_id": user.id})
-    else:
-        return Response({"error": "Contraseña incorrecta"}, status=status.HTTP_401_UNAUTHORIZED)
-
-
-
-# ✅ ViewSet para registrar usuarios
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
+
+    @action(detail=False, methods=['post'], url_path='login')
+    def login(self, request):
+        email = request.data.get('email')
+        password = request.data.get('password')
+
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            return Response({"error": "Usuario no encontrado"}, status=status.HTTP_404_NOT_FOUND)
+
+        if user.check_password(password):
+            return Response({"message": "Login exitoso", "user_id": user.id})
+        else:
+            return Response({"error": "Contraseña incorrecta"}, status=status.HTTP_401_UNAUTHORIZED)
+        
     @action(detail=False, methods=['post'], url_path='register')
     def register(self, request):
         email = request.data.get('email')
