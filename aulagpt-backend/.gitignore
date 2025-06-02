@@ -25,5 +25,5 @@ Thumbs.db
 staticfiles/
 media/
 
-# Ignorar credenciales de Google Drive
+# Ignorar credenciales de Google Drive   
 api/google_drive/credentials.json
