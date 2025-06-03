@@ -2,7 +2,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import (
     UserViewSet, ClassViewSet, UserClassViewSet,
-    DocumentsViewSet, DocumentUploadView, TestsViewSet, TestQuestionViewSet,
+    DocumentsViewSet, TestsViewSet, TestQuestionViewSet,
     TestAnswerViewSet, ActivityViewSet,
 )
 
@@ -17,6 +17,5 @@ router.register(r'testanswers', TestAnswerViewSet)
 router.register(r'activities', ActivityViewSet)
 
 urlpatterns = [
-    path('upload-document/', DocumentUploadView.as_view(), name='upload-document'),
     path('', include(router.urls)),
 ]
