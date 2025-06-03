@@ -17,10 +17,10 @@ ALLOWED_HOSTS = ['aulagpt.onrender.com', 'aulagpt.net', 'localhost', '127.0.0.1'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'aulagpt_db',           # Cambia al nombre real de tu base de datos
+        'NAME': 'aulagpt',           # Cambia al nombre real de tu base de datos
         'USER': 'admin',                # Cambia por tu usuario MySQL
-        'PASSWORD': 'RmHLRrJb19022004!',  # Cambia por tu contraseña MySQL
-        'HOST': 'auladb.c3c4gg2w4fu0.eu-north-1.rds.amazonaws.com',  # Host de tu DB en AWS
+        'PASSWORD': 'RmHLRrJb19022004%',  # Cambia por tu contraseña MySQL
+        'HOST': 'aulagpt-db.ctqi6iy86bw3.eu-north-1.rds.amazonaws.com',  # Host de tu DB en AWS
         'PORT': '3306',
     }
 }
