@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import User, Class, UserClass, Documents, Tests, TestQuestion, TestAnswer, Activity
-from .google_drive.utils import create_drive_folder
+from .google_drive.utils import subir_a_google_drive
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -46,7 +46,7 @@ class ClassSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         folder_name = validated_data.get('name')
         # Crear carpeta en Google Drive
-        folder_id = create_drive_folder (folder_name)
+        folder_id = subir_a_google_drive (folder_name)
         # Asignar el ID de la carpeta a validated_data
         validated_data['google_drive_folder_id'] = folder_id
         # Crear la instancia Class con el folder_id
