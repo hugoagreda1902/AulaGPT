@@ -8,7 +8,7 @@ function Home() {
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 text-center p-4">
       <h1 className="text-4xl font-bold mb-6">Bienvenido a AulaGPT</h1>
       <p className="mb-8 text-gray-700">Tu asistente educativo inteligente.</p>
-      
+
       <div className="space-x-4">
         <button
           onClick={() => navigate("/register")}
@@ -21,6 +21,12 @@ function Home() {
           className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded"
         >
           Iniciar sesión
+        </button>
+        <button
+          onClick={() => navigate("/upload")}
+          className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded"
+        >
+          Subir Documento
         </button>
       </div>
     </div>
