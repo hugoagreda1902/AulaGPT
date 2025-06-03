@@ -48,7 +48,7 @@ function Register() {
       const allErrors = Object.values(data).flat().join(" ");
       setError(allErrors || "Error en el registro");
     } else {
-      setError("Error en el registro");
+      setError("Error en el registro.");
     }
 
     }
