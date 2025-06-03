@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import (
-    UserViewSet, ClassViewSet, UserClassViewSet,
+    ping_db, UserViewSet, ClassViewSet, UserClassViewSet,
     DocumentsViewSet, TestsViewSet, TestQuestionViewSet,
     TestAnswerViewSet, ActivityViewSet,
 )
@@ -21,4 +21,5 @@ urlpatterns = [
     path('', include(router.urls)),
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('ping-db/', ping_db, name='ping_db'),
 ]

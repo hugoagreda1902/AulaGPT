@@ -1,8 +1,8 @@
 from rest_framework import viewsets, status, permissions
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 from .models import User, Class, UserClass, Documents, Tests, TestQuestion, TestAnswer, Activity
 from .serializers import (
@@ -12,6 +12,20 @@ from .serializers import (
 )
 from .google_drive.utils import subir_a_google_drive
 
+from django.db import connection
+import time
+
+@ api_view(['GET'])
+@permission_classes([AllowAny])
+def ping_db(request):
+    start = time.time()
+    try:
+        connection.ensure_connection()
+        status = "OK"
+    except Exception as e:
+        status = f"ERROR: {e}"
+    elapsed = time.time() - start
+    return Response({"db_status": status, "elapsed": elapsed})
 
 # ✅ Vista protegida con autenticación JWT
 class MiVistaProtegida(APIView):
