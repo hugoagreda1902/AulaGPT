@@ -2,6 +2,23 @@ from rest_framework import serializers
 from .models import User, Class, UserClass, Documents, Tests, TestQuestion, TestAnswer, Activity
 from .google_drive.utils import subir_a_google_drive
 
+class RegisterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('user_id', 'name', 'surname', 'email', 'password', 'role')
+        extra_kwargs = {
+            'password': {'write_only': True}
+        }
+
+    def create(self, validated_data):
+        user = User.objects.create_user(
+            name=validated_data['name'],
+            surname=validated_data['surname'],
+            email=validated_data['email'],
+            password=validated_data['password'],
+            role=validated_data['role']
+        )
+        return user
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True, min_length=6)

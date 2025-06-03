@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from .models import User, Class, UserClass, Documents, Tests, TestQuestion, TestAnswer, Activity
 from .serializers import (
-    UserSerializer, ClassSerializer, UserClassSerializer,
+    RegisterSerializer, UserSerializer, ClassSerializer, UserClassSerializer,
     DocumentsSerializer, TestsSerializer, TestQuestionSerializer,
     TestAnswerSerializer, ActivitySerializer
 )
@@ -27,6 +27,24 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     permission_classes = [permissions.AllowAny]
 
+    def get_serializer_class(self):
+        if self.action == 'register':
+            return RegisterSerializer
+        return UserSerializer
+
+    @action(detail=False, methods=['post'], url_path='register')
+    def register(self, request):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            return Response({
+                "message": "Registro exitoso",
+                "user_id": user.user_id,
+                "email": user.email,
+                "role": user.role
+            }, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
     @action(detail=False, methods=['post'], url_path='login')
     def login(self, request):
         email = request.data.get('email')
@@ -44,21 +62,6 @@ class UserViewSet(viewsets.ModelViewSet):
             })
         else:
             return Response({"error": "Contraseña incorrecta"}, status=status.HTTP_401_UNAUTHORIZED)
-
-    @action(detail=False, methods=['post'], url_path='register')
-    def register(self, request):
-        email = request.data.get('email')
-
-        if User.objects.filter(email=email).exists():
-            return Response({'email': 'Este email ya está registrado.'}, status=status.HTTP_409_CONFLICT)
-
-        serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 # ✅ Gestión de documentos con subida a Google Drive
 class DocumentsViewSet(viewsets.ModelViewSet):
