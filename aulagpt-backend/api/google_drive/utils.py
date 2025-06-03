@@ -14,7 +14,7 @@ def get_drive_service():
     service = build('drive', 'v3', credentials=creds)
     return service
 
-def create_drive_folder(folder_name, parent_folder_id=None):
+def subir_a_google_drive(folder_name, parent_folder_id=None):
     """
     Crea una carpeta en Google Drive.
     
