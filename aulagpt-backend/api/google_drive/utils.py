@@ -1,10 +1,11 @@
-# utils.py
-
 from googleapiclient.discovery import build
 from google.oauth2 import service_account
+import os
 
-# Cambia esto por la ruta a tu archivo de credenciales
-SERVICE_ACCOUNT_FILE = 'path/to/credentials.json'
+# Cambia esto por la ruta real a tu archivo de credenciales (usa ruta absoluta si es posible)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+SERVICE_ACCOUNT_FILE = os.path.join(BASE_DIR, 'credentials.json')
+
 SCOPES = ['https://www.googleapis.com/auth/drive']
 
 def get_drive_service():
@@ -14,6 +15,13 @@ def get_drive_service():
     return service
 
 def create_drive_folder(folder_name, parent_folder_id=None):
+    """
+    Crea una carpeta en Google Drive.
+    
+    :param folder_name: Nombre de la carpeta a crear.
+    :param parent_folder_id: (Opcional) ID de la carpeta padre.
+    :return: ID de la nueva carpeta.
+    """
     service = get_drive_service()
     file_metadata = {
         'name': folder_name,
