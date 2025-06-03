@@ -42,7 +42,15 @@ function Register() {
     } else {
       const data = await res.json();
       console.log("Respuesta error JSON:", data);
-      setError(data.email || "Error en el registro");
+
+      // Si data es un objeto con errores, intenta mostrar todos
+    if (typeof data === 'object') {
+      const allErrors = Object.values(data).flat().join(" ");
+      setError(allErrors || "Error en el registro");
+    } else {
+      setError("Error en el registro");
+    }
+
     }
   } catch (error) {
     console.error("Error en fetch:", error);
