@@ -9,6 +9,8 @@ class UserManager(BaseUserManager):
             raise ValueError('Users must have an email address')
         # Normaliza el email (minúsculas)
         email = self.normalize_email(email)
+        if role not in ['student', 'teacher']:
+            raise ValueError('Role must be student or teacher')
         # Crea instancia del usuario con los datos básicos
         user = self.model(email=email, name=name, surname=surname, role=role)
         # Asigna la contraseña hasheada
@@ -18,13 +20,17 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, name, surname, role='teacher', password=None):
-        # Crea un usuario normal con el rol teacher por defecto
+        if not email:
+            raise ValueError('Users must have an email address')
+        if role not in ['student', 'teacher']:
+            raise ValueError('Role must be student or teacher')
+
         user = self.create_user(email, name, surname, role, password)
-        # Marca este usuario como staff y superusuario
         user.is_staff = True
         user.is_superuser = True
         user.save(using=self._db)
         return user
+
 
 # Modelo User personalizado, basado en AbstractBaseUser para manejar autenticación con email
 class User(AbstractBaseUser, PermissionsMixin):
@@ -79,13 +85,14 @@ class Class(models.Model):
         return self.class_name
     
 # Modelo para documentos subidos, asociados a una clase    
-class Documents (models.Model):
-    document_id = models.AutoField (primary_key=True)                                            # ID autoincremental del documento
-    class_id = models.ForeignKey (Class, on_delete=models.CASCADE, related_name='documents')     # FK a la clase a la que pertenece
-    file_name = models.CharField (max_length=200)                                                # Nombre del archivo
-    file_type = models.CharField (max_length=10)                                                 # Tipo de archivo (PDF, DOCX...)
-    upload_date = models.DateTimeField (auto_now_add=True)                                       # Fecha automática de subida
-    drive_link = models.URLField ()                                                              # URL del archivo en Google Drive
+class Documents(models.Model):
+    document_id = models.AutoField(primary_key=True)                                            # ID autoincremental del documento
+    class_id = models.ForeignKey(Class, on_delete=models.CASCADE, related_name='documents')     # FK a la clase a la que pertenece
+    subject = models.CharField(max_length=100, default='Sin asignar')                           # Aquí defines la materia con valor por defecto
+    file_name = models.CharField(max_length=200)                                                # Nombre del archivo
+    file_type = models.CharField(max_length=10)                                                 # Tipo de archivo (PDF, DOCX...)
+    upload_date = models.DateTimeField(auto_now_add=True)                                       # Fecha automática de subida
+    drive_link = models.URLField()                                                              # URL del archivo en Google Drive
 
     def __str__(self):
         return self.file_name
@@ -106,10 +113,12 @@ class TestQuestion (models.Model):
     question_id = models.AutoField (primary_key=True)                                              # ID de la pregunta
     test_id = models.ForeignKey (Tests, on_delete=models.CASCADE, related_name='questions')        # FK al test
     question_text = models.TextField ()                      # Texto de la pregunta 
-    option_1 = models.CharField (max_length=200)             # Opción 1
-    option_2 = models.CharField (max_length=200)             # Opción 2
-    option_3 = models.CharField (max_length=200)             # Opción 3
-    correct_option = models.CharField (max_length=10)        # Opción correcta
+    OPTION_CHOICES = (
+    ('1', 'Option 1'),
+    ('2', 'Option 2'),
+    ('3', 'Option 3'),
+    )
+    correct_option = models.CharField(max_length=1, choices=OPTION_CHOICES)
 
     def __str__(self):
         # Muestra los primeros 50 caracteres

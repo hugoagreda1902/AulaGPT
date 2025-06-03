@@ -1,20 +1,31 @@
 from rest_framework import viewsets, status, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+
 from .models import User, Class, UserClass, Documents, Tests, TestQuestion, TestAnswer, Activity
 from .serializers import (
     UserSerializer, ClassSerializer, UserClassSerializer,
     DocumentsSerializer, TestsSerializer, TestQuestionSerializer,
     TestAnswerSerializer, ActivitySerializer
 )
-from .serializers import DocumentsSerializer
-from .google_drive.utils import subir_a_google_drive 
+from .google_drive.utils import subir_a_google_drive
 
 
+# ✅ Vista protegida con autenticación JWT
+class MiVistaProtegida(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        return Response({"mensaje": f"Hola, {request.user.username}"})
+
+
+# ✅ Gestión de usuarios
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-
+    permission_classes = [permissions.AllowAny]
 
     @action(detail=False, methods=['post'], url_path='login')
     def login(self, request):
@@ -23,16 +34,17 @@ class UserViewSet(viewsets.ModelViewSet):
 
         try:
             user = User.objects.get(email=email)
-            print(f"Usuario encontrado: {user}")  # o logging.info(...)
         except User.DoesNotExist:
             return Response({"error": "Usuario no encontrado"}, status=status.HTTP_404_NOT_FOUND)
 
         if user.check_password(password):
-            return Response({"message": "Login exitoso", "user_id": user.user_id})
+            return Response({
+                "message": "Login exitoso",
+                "user_id": user.user_id
+            })
         else:
             return Response({"error": "Contraseña incorrecta"}, status=status.HTTP_401_UNAUTHORIZED)
 
-        
     @action(detail=False, methods=['post'], url_path='register')
     def register(self, request):
         email = request.data.get('email')
@@ -46,8 +58,9 @@ class UserViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
 
+
+# ✅ Gestión de documentos con subida a Google Drive
 class DocumentsViewSet(viewsets.ModelViewSet):
     queryset = Documents.objects.all()
     serializer_class = DocumentsSerializer
@@ -55,16 +68,17 @@ class DocumentsViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         serializer = DocumentsSerializer(data=request.data)
+
         if serializer.is_valid():
             uploaded_file = request.FILES.get('file')
 
             if not uploaded_file:
                 return Response({'file': 'Archivo requerido.'}, status=status.HTTP_400_BAD_REQUEST)
 
-            # Llamamos a la función para subir a Google Drive y obtener el link
+            # 📤 Subir archivo a Google Drive
             drive_link = subir_a_google_drive(uploaded_file)
 
-            # Creamos el documento en la BD
+            # 📦 Guardar documento en la base de datos
             document = Documents.objects.create(
                 drive_link=drive_link,
                 file_name=uploaded_file.name,
@@ -73,15 +87,18 @@ class DocumentsViewSet(viewsets.ModelViewSet):
             )
 
             return Response(DocumentsSerializer(document).data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# ✅ ViewSets para el resto de modelos
+# ✅ Gestión de clases
 class ClassViewSet(viewsets.ModelViewSet):
     queryset = Class.objects.all()
     serializer_class = ClassSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
+
+# ✅ Asociación entre usuario y clase
 class UserClassViewSet(viewsets.ModelViewSet):
     queryset = UserClass.objects.all()
     serializer_class = UserClassSerializer
@@ -91,18 +108,26 @@ class UserClassViewSet(viewsets.ModelViewSet):
         serializer.save()
 
 
+# ✅ Tests, preguntas, respuestas y actividad
 class TestsViewSet(viewsets.ModelViewSet):
     queryset = Tests.objects.all()
     serializer_class = TestsSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
 
 class TestQuestionViewSet(viewsets.ModelViewSet):
     queryset = TestQuestion.objects.all()
     serializer_class = TestQuestionSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
 
 class TestAnswerViewSet(viewsets.ModelViewSet):
     queryset = TestAnswer.objects.all()
     serializer_class = TestAnswerSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
 
 class ActivityViewSet(viewsets.ModelViewSet):
     queryset = Activity.objects.all()
     serializer_class = ActivitySerializer
+    permission_classes = [permissions.IsAuthenticated]

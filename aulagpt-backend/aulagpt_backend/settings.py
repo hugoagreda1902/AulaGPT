@@ -1,7 +1,20 @@
 import os
 from pathlib import Path
+from datetime import timedelta
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'AUTH_HEADER_TYPES': ('Bearer',),
+}
 
 # Seguridad
 SECRET_KEY = 'fk5dd=8&!c(0on=y6hhhd6hftjq(i)krxv=c45f6tqj$t@uvet'  
