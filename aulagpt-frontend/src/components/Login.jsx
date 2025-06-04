@@ -1,10 +1,11 @@
-// Login.jsx
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,8 +23,12 @@ function Login() {
       const data = await response.json();
 
       if (response.ok) {
+        // Guarda el token en localStorage (o sessionStorage)
+        localStorage.setItem("token", data.token); // <-- asumiendo que el backend devuelve data.token
+
         alert("Login correcto");
-        console.log("Datos usuario:", data);
+        // Redirige a subir documento
+        navigate("/uploadDocument");
       } else {
         setErrorMsg(data.error || "Error al iniciar sesión");
       }

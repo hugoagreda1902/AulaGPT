@@ -22,12 +22,6 @@ function Home() {
         >
           Iniciar sesión
         </button>
-        <button
-          onClick={() => navigate("/uploadDocument")}
-          className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded"
-        >
-          Subir Documento
-        </button>
       </div>
     </div>
   );
