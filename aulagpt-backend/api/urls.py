@@ -23,4 +23,4 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('ping-db/', ping_db, name='ping_db'),
     path('uploadDocument/', UploadDocumentView.as_view(), name='uploadDocument'),
-]
+]   

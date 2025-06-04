@@ -78,9 +78,7 @@ class Class(models.Model):
     class_id = models.AutoField(primary_key=True)                 
     class_name = models.CharField(max_length=100)                 
     acces_code = models.CharField(max_length=20, unique=True)     
-
     users = models.ManyToManyField(User, through='UserClass')    
-
     drive_folder_id = models.CharField(max_length=200, blank=True, null=True)  # ⬅️ nuevo campo
 
     def __str__(self):
@@ -89,7 +87,9 @@ class Class(models.Model):
 # Modelo para documentos subidos, asociados a una clase    
 class Documents(models.Model):
     document_id = models.AutoField(primary_key=True)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='documents')  # 👈 NUEVO
+
+    # Asociar documento a usuario (opcional)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='documents')
     class_id = models.ForeignKey(Class, on_delete=models.CASCADE, default=1, related_name='documents')
     subject = models.CharField(max_length=100, default='Sin asignar')
     file_name = models.CharField(max_length=200)
