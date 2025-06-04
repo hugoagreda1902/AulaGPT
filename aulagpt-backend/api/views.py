@@ -115,7 +115,7 @@ class UploadDocumentView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = DocumentsSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(owner=request.user)  # Asocia el documento al usuario que lo sube
+            serializer.save(owner=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
