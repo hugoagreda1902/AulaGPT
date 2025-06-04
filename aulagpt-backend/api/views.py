@@ -1,4 +1,5 @@
 from rest_framework import viewsets, status, permissions
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -6,7 +7,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 
 from .models import User, Class, UserClass, Documents, Tests, TestQuestion, TestAnswer, Activity
 from .serializers import (
-    RegisterSerializer, UserSerializer, ClassSerializer, UserClassSerializer,
+    RegisterSerializer, UserSerializer, DocumentsSerializer, ClassSerializer, UserClassSerializer,
     DocumentsSerializer, TestsSerializer, TestQuestionSerializer,
     TestAnswerSerializer, ActivitySerializer
 )
@@ -107,6 +108,16 @@ class DocumentsViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class UploadDocumentView(APIView):
+    parser_classes = [MultiPartParser, FormParser]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        serializer = DocumentsSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(owner=request.user)  # Asocia el documento al usuario que lo sube
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # ✅ Gestión de clases
 class ClassViewSet(viewsets.ModelViewSet):
