@@ -1,6 +1,10 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
 # Manager personalizado para el modelo User, para crear usuarios y superusuarsios
 class UserManager(BaseUserManager):
     def create_user(self, email, name, surname, role, password=None):
@@ -86,13 +90,14 @@ class Class(models.Model):
     
 # Modelo para documentos subidos, asociados a una clase    
 class Documents(models.Model):
-    document_id = models.AutoField(primary_key=True)                                            # ID autoincremental del documento
-    class_id = models.ForeignKey(Class, on_delete=models.CASCADE, related_name='documents')     # FK a la clase a la que pertenece
-    subject = models.CharField(max_length=100, default='Sin asignar')                           # Aquí defines la materia con valor por defecto
-    file_name = models.CharField(max_length=200)                                                # Nombre del archivo
-    file_type = models.CharField(max_length=10)                                                 # Tipo de archivo (PDF, DOCX...)
-    upload_date = models.DateTimeField(auto_now_add=True)                                       # Fecha automática de subida
-    drive_link = models.URLField()                                                              # URL del archivo en Google Drive
+    document_id = models.AutoField(primary_key=True)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='documents')  # 👈 NUEVO
+    class_id = models.ForeignKey(Class, on_delete=models.CASCADE, related_name='documents')
+    subject = models.CharField(max_length=100, default='Sin asignar')
+    file_name = models.CharField(max_length=200)
+    file_type = models.CharField(max_length=10)
+    upload_date = models.DateTimeField(auto_now_add=True)
+    drive_link = models.URLField()
 
     def __str__(self):
         return self.file_name

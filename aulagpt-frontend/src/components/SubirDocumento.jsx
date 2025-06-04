@@ -1,64 +1,71 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
+import axios from 'axios';
 
 function SubirDocumento() {
   const [file, setFile] = useState(null);
-  const [classId, setClassId] = useState("");
-  const [message, setMessage] = useState("");
+  const [classId, setClassId] = useState(''); // Añadido
+  const [subject, setSubject] = useState(''); // Opcional
+  const [mensaje, setMensaje] = useState('');
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
   };
 
-  const handleSubmit = async (e) => {
+  const handleUpload = async (e) => {
     e.preventDefault();
-
     if (!file || !classId) {
-      setMessage("Por favor selecciona un archivo y una clase.");
+      setMensaje('Selecciona un archivo y una clase');
       return;
     }
 
     const formData = new FormData();
-    formData.append("file", file);
-    formData.append("class_id", classId); // Asegúrate de que esto coincida con tu backend
+    formData.append('file', file);
+    formData.append('class_id', classId);
+    if (subject) formData.append('subject', subject); // Opcional
 
     try {
-      const res = await fetch("https://aulagpt.onrender.com/api/documents/upload/", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: formData,
-      });
-
-      if (res.ok) {
-        setMessage("Documento subido correctamente.");
-        setFile(null);
-        setClassId("");
-      } else {
-        const data = await res.json();
-        setMessage(data.error || "Error al subir el documento.");
-      }
+      const token = localStorage.getItem('token');
+      const response = await axios.post(
+        'https://aulagpt.onrender.com/api/documents/upload/',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setMensaje('Documento subido correctamente');
+      console.log(response.data);
     } catch (error) {
-      console.error("Error:", error);
-      setMessage("Error de conexión.");
+      console.error('Error al subir el documento:', error);
+      setMensaje('Error al subir el documento');
     }
   };
 
   return (
     <div>
       <h2>Subir Documento</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleUpload}>
+        <input type="file" onChange={handleFileChange} />
+        <br />
         <input
           type="text"
           placeholder="ID de la clase"
           value={classId}
           onChange={(e) => setClassId(e.target.value)}
-          required
         />
-        <input type="file" onChange={handleFileChange} required />
+        <br />
+        <input
+          type="text"
+          placeholder="Materia (opcional)"
+          value={subject}
+          onChange={(e) => setSubject(e.target.value)}
+        />
+        <br />
         <button type="submit">Subir</button>
       </form>
-      {message && <p>{message}</p>}
+      {mensaje && <p>{mensaje}</p>}
     </div>
   );
 }
