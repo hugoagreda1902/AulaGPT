@@ -26,6 +26,4 @@ urlpatterns = [
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
-    # Alias para login desde frontend
-    path('users/login/', TokenObtainPairView.as_view(), name='custom_login'),
 ]
