@@ -90,7 +90,7 @@ class Class(models.Model):
 class Documents(models.Model):
     document_id = models.AutoField(primary_key=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='documents')  # 👈 NUEVO
-    class_id = models.ForeignKey(Class, on_delete=models.CASCADE, related_name='documents')
+    class_id = models.ForeignKey(Class, on_delete=models.CASCADE, default=1, related_name='documents')
     subject = models.CharField(max_length=100, default='Sin asignar')
     file_name = models.CharField(max_length=200)
     file_type = models.CharField(max_length=10)
