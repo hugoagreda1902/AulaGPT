@@ -12,7 +12,7 @@ function Login() {
     setErrorMsg("");
 
     try {
-      const response = await fetch("https://aulagpt.onrender.com/api/users/login/", {
+      const response = await fetch("https://aulagpt.onrender.com/api/token/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -23,15 +23,15 @@ function Login() {
       const data = await response.json();
 
       if (response.ok) {
-        // Guarda el token en localStorage (o sessionStorage)
-        localStorage.setItem("token", data.token); // <-- asumiendo que el backend devuelve data.token
+        // Guarda el token de acceso (JWT) en localStorage
+        localStorage.setItem("token", data.access); // Aquí usamos data.access correctamente
 
         alert("Login correcto");
-        console.log("Datos usuario:", data);
-        // Redirige a subir documento
+        console.log("Token de acceso:", data.access);
+        // Redirige a la página de subida de documentos
         navigate("/uploadDocument");
       } else {
-        setErrorMsg(data.error || "Error al iniciar sesión");
+        setErrorMsg(data.detail || "Error al iniciar sesión");
       }
     } catch (err) {
       console.error("Error en login:", err);

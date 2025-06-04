@@ -37,6 +37,7 @@ function SubirDocumento() {
       setMensaje('');
       return;
     }
+
     if (!subject) {
       setError('Por favor, selecciona una materia.');
       setMensaje('');
@@ -49,6 +50,12 @@ function SubirDocumento() {
 
     try {
       const token = localStorage.getItem('token');
+
+      if (!token) {
+        setError('No se encontró el token. Por favor inicia sesión.');
+        return;
+      }
+
       const response = await axios.post(
         'https://aulagpt.onrender.com/api/uploadDocument/',
         formData,
@@ -59,14 +66,19 @@ function SubirDocumento() {
           },
         }
       );
+
       setMensaje('Documento subido correctamente.');
       setError('');
       setFile(null);
       setSubject('');
-      // Limpiar input file
+      // Reiniciar el formulario
       e.target.reset();
     } catch (err) {
-      setError('Error al subir el documento.');
+      if (err.response && err.response.status === 401) {
+        setError('No autorizado. Por favor inicia sesión de nuevo.');
+      } else {
+        setError('Error al subir el documento.');
+      }
       setMensaje('');
       console.error(err);
     }
