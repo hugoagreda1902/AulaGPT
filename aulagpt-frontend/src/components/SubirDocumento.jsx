@@ -1,50 +1,51 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 
 function SubirDocumento() {
   const [file, setFile] = useState(null);
-  const [classes, setClasses] = useState([]);
-  const [selectedClassId, setSelectedClassId] = useState('');
   const [subject, setSubject] = useState('');
   const [mensaje, setMensaje] = useState('');
+  const [error, setError] = useState('');
 
-  // Cargar clases desde backend cuando carga el componente
-  useEffect(() => {
-    const fetchClasses = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        const response = await axios.get('https://aulagpt.onrender.com/api/classes/', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setClasses(response.data);
-        if (response.data.length > 0) {
-          setSelectedClassId(response.data[0].class_id || response.data[0].id); // Ajusta según la estructura que devuelvas
-        }
-      } catch (error) {
-        console.error('Error cargando clases:', error);
-      }
-    };
-    fetchClasses();
-  }, []);
+  const materias = [
+    'Matemáticas',
+    'Lengua',
+    'Ciencias',
+    'Historia',
+    'Inglés',
+    'Física',
+    'Química',
+  ];
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
+    setMensaje('');
+    setError('');
+  };
+
+  const handleSubjectChange = (e) => {
+    setSubject(e.target.value);
+    setMensaje('');
+    setError('');
   };
 
   const handleUpload = async (e) => {
     e.preventDefault();
 
-    if (!file || !selectedClassId) {
-      setMensaje('Selecciona un archivo y una clase');
+    if (!file) {
+      setError('Por favor, selecciona un archivo.');
+      setMensaje('');
+      return;
+    }
+    if (!subject) {
+      setError('Por favor, selecciona una materia.');
+      setMensaje('');
       return;
     }
 
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('class_id', selectedClassId);
-    if (subject) formData.append('subject', subject);
+    formData.append('subject', subject);
 
     try {
       const token = localStorage.getItem('token');
@@ -58,12 +59,16 @@ function SubirDocumento() {
           },
         }
       );
-      setMensaje('Documento subido correctamente');
+      setMensaje('Documento subido correctamente.');
+      setError('');
       setFile(null);
       setSubject('');
-    } catch (error) {
-      console.error('Error al subir el documento:', error);
-      setMensaje('Error al subir el documento');
+      // Limpiar input file
+      e.target.reset();
+    } catch (err) {
+      setError('Error al subir el documento.');
+      setMensaje('');
+      console.error(err);
     }
   };
 
@@ -72,29 +77,20 @@ function SubirDocumento() {
       <h2>Subir Documento</h2>
       <form onSubmit={handleUpload}>
         <input type="file" onChange={handleFileChange} />
-        <br />
-        <label>Clase:</label>
-        <select
-          value={selectedClassId}
-          onChange={(e) => setSelectedClassId(e.target.value)}
-        >
-          {classes.map((cls) => (
-            <option key={cls.class_id || cls.id} value={cls.class_id || cls.id}>
-              {cls.name || cls.subject || `Clase ${cls.class_id || cls.id}`}
+        <br /><br />
+        <select value={subject} onChange={handleSubjectChange}>
+          <option value="">-- Selecciona una materia --</option>
+          {materias.map((mat, i) => (
+            <option key={i} value={mat}>
+              {mat}
             </option>
           ))}
         </select>
-        <br />
-        <input
-          type="text"
-          placeholder="Materia (opcional)"
-          value={subject}
-          onChange={(e) => setSubject(e.target.value)}
-        />
-        <br />
+        <br /><br />
         <button type="submit">Subir</button>
       </form>
-      {mensaje && <p>{mensaje}</p>}
+      {mensaje && <p style={{ color: 'green' }}>{mensaje}</p>}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
     </div>
   );
 }
