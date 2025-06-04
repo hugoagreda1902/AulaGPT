@@ -3,8 +3,6 @@ from django.db import models
 
 from django.contrib.auth import get_user_model
 
-User = get_user_model()
-
 # Manager personalizado para el modelo User, para crear usuarios y superusuarsios
 class UserManager(BaseUserManager):
     def create_user(self, email, name, surname, role, password=None):
@@ -91,7 +89,7 @@ class Class(models.Model):
 # Modelo para documentos subidos, asociados a una clase    
 class Documents(models.Model):
     document_id = models.AutoField(primary_key=True)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='documents')  # 👈 NUEVO
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='documents')  # 👈 NUEVO
     class_id = models.ForeignKey(Class, on_delete=models.CASCADE, related_name='documents')
     subject = models.CharField(max_length=100, default='Sin asignar')
     file_name = models.CharField(max_length=200)
