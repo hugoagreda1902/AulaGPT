@@ -4,17 +4,18 @@ from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
-
+from googleapiclient.discovery import build
+from googleapiclient.http import MediaIoBaseUpload
+from google.oauth2 import service_account
+import io
+from django.db import connection
+import time
 from .models import User, Class, UserClass, Documents, Tests, TestQuestion, TestAnswer, Activity
 from .serializers import (
     RegisterSerializer, UserSerializer, DocumentsSerializer, ClassSerializer, UserClassSerializer,
     DocumentsSerializer, TestsSerializer, TestQuestionSerializer,
     TestAnswerSerializer, ActivitySerializer
 )
-from .google_drive.utils import subir_a_google_drive
-
-from django.db import connection
-import time
 
 @ api_view(['GET'])
 @permission_classes([AllowAny])
@@ -109,16 +110,50 @@ class DocumentsViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UploadDocumentView(APIView):
-    parser_classes = [MultiPartParser, FormParser]
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
-        serializer = DocumentsSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(owner=request.user)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        file = request.FILES.get('file')
+        subject = request.data.get('subject')
+        class_id = request.data.get('class_id') or 1  # Puedes ajustarlo según lo necesites
 
+        if not file or not subject:
+            return Response({'error': 'Archivo y materia son requeridos.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Subir archivo a Google Drive
+        try:
+            creds = service_account.Credentials.from_service_account_file(
+                'google_drive/credentials.json',
+                scopes=['https://www.googleapis.com/auth/drive']
+            )
+
+            service = build('drive', 'v3', credentials=creds)
+
+            file_metadata = {
+                'name': file.name,
+                'parents': ['17VaTCurTKg2IZ1Oo-VC5W2uJNHTI6cy8'],  # 👈 PON AQUÍ el ID de la carpeta compartida en Drive
+            }
+
+            media = MediaIoBaseUpload(file, mimetype=file.content_type)
+            uploaded_file = service.files().create(body=file_metadata, media_body=media, fields='id').execute()
+
+            drive_link = f"https://drive.google.com/file/d/{uploaded_file['id']}/view"
+
+        except Exception as e:
+            return Response({'error': f'Error al subir a Drive: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        # Guardar en la base de datos
+        document = Documents.objects.create(
+            owner=request.user,
+            class_id_id=class_id,
+            subject=subject,
+            file_name=file.name,
+            file_type=file.content_type,
+            drive_link=drive_link
+        )
+
+        serializer = DocumentsSerializer(document)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 # ✅ Gestión de clases
 class ClassViewSet(viewsets.ModelViewSet):
     queryset = Class.objects.all()
