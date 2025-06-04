@@ -27,6 +27,7 @@ function Login() {
         localStorage.setItem("token", data.token); // <-- asumiendo que el backend devuelve data.token
 
         alert("Login correcto");
+        console.log("Datos usuario:", data);
         // Redirige a subir documento
         navigate("/uploadDocument");
       } else {
